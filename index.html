@@ -1275,7 +1275,7 @@ IMPORTANT: Each dimension's items pct values must sum to exactly 100. Use only l
     const raw = body?.generated_text ?? '';
     let allocation;
     try {
-      const cleaned = raw.replace(/^```[a-z]*\n?/i, '').replace(/\n?```$/, '').trim();
+      const cleaned = raw.replace(/^\s*```[a-z]*\s*/i, '').replace(/\s*```\s*$/, '').trim();
       const match = cleaned.match(/\{[\s\S]*\}/);
       if (!match) throw new Error('no JSON object found');
       allocation = JSON.parse(match[0]);
@@ -1779,13 +1779,14 @@ Return the JSON post-mortem analysis now:`;
       const raw  = body?.generated_text ?? '';
       let pm;
       try {
-        const cleaned = raw.replace(/^```[a-z]*\n?/i,'').replace(/\n?```$/,'').trim();
+        // Strip all markdown fences (with or without leading spaces/newlines)
+        const cleaned = raw.replace(/^\s*```[a-z]*\s*/i,'').replace(/\s*```\s*$/,'').trim();
+        // Extract the outermost { ... } block
         const match   = cleaned.match(/\{[\s\S]*\}/);
         if (!match) throw new Error('no JSON found');
         pm = JSON.parse(match[0]);
       } catch (_) {
         console.error('[postmortem] raw:', raw);
-        // Show first 300 chars of raw response to help diagnose
         const preview = raw.slice(0, 300).replace(/\n/g, ' ');
         throw new Error(`AI returned invalid JSON. Raw response preview: "${preview}"`);
       }
