@@ -1747,7 +1747,7 @@ Rules:
       return `${dim.label}:\n${rows}`;
     }).join('\n\n');
 
-    const exTrunc  = state.excelText.slice(0, 7000);
+    const exTrunc  = summariseExcel(state.excelText, 12000);
     const porTrunc = state.slideText.slice(0, 1000); // event name context from PoR
 
     const prompt = `${PM_SYSTEM_PROMPT}
@@ -1944,6 +1944,55 @@ Return the JSON post-mortem analysis now:`;
     errorBox2.textContent = '';
     errorBox2.classList.remove('visible');
   }
+
+
+  /**
+   * Intelligently summarise a large Excel CSV string to fit within maxChars.
+   * Keeps: sheet headers, CSV header rows, keyword-matching rows,
+   * then evenly samples remaining rows to fill the budget.
+   */
+  function summariseExcel(text, maxChars) {
+    if (text.length <= maxChars) return text;
+
+    const keywords = /pipeline|revenue|opportunit|uplift|influenced|account|region|industry|segment|persona|product|geography|funnel|stage|deal|close|won|contact|attend/i;
+    const lines    = text.split('\n');
+    const priority = [];
+    const rest     = [];
+    let   isHeader = true;
+
+    for (const line of lines) {
+      if (line.startsWith('=== Sheet:')) {
+        priority.push(line);
+        isHeader = true; // next non-empty line is a CSV header
+        continue;
+      }
+      if (isHeader && line.trim()) {
+        priority.push(line); // always keep CSV header row
+        isHeader = false;
+        continue;
+      }
+      if (keywords.test(line)) {
+        priority.push(line);
+      } else {
+        rest.push(line);
+      }
+    }
+
+    let result = priority.join('\n');
+    if (result.length >= maxChars) return result.slice(0, maxChars);
+
+    // Fill remaining budget with evenly-sampled rest rows
+    const remaining = maxChars - result.length - 100;
+    if (remaining > 0 && rest.length > 0) {
+      const avgRowLen = Math.max(40, Math.floor(rest.reduce((s, r) => s + r.length, 0) / rest.length));
+      const step      = Math.max(1, Math.floor(rest.length / (remaining / avgRowLen)));
+      const sampled   = rest.filter((_, i) => i % step === 0).join('\n');
+      result += '\n' + sampled.slice(0, remaining);
+    }
+
+    return result;
+  }
+
 
 </script>
 
