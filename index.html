@@ -665,11 +665,8 @@
 
 <script>
   /* ── Constants ─────────────────────────────────────────────────────────── */
-
-  const WX_API_KEY  = 'ilEQFwmwKWTdGk-Nh0Im70IgrAYY579KJl0mWqQr0JBf';
-  const WX_SPACE_ID = '9d99054b-00ab-4166-a499-48c3442bcc62';
-  const WX_URL      = 'https://us-south.ml.cloud.ibm.com';
-  const WX_MODEL    = 'meta-llama/llama-3-3-70b-instruct';
+  // Cloudflare Worker URL — update this after deploying cloudflare-worker.js
+  const WORKER_URL = 'https://sparkling-sun-a30f.david-gerken.workers.dev';
 
   const CAT_COLOURS = [
     '#0f62fe','#6929c4','#1192e8','#005d5d',
@@ -893,85 +890,44 @@ IMPORTANT: Each dimension's items pct values must sum to exactly 100. Use only l
     }
   });
 
-  /* ── watsonx.ai API ─────────────────────────────────────────────────────── */
-
-  async function getIamToken() {
-    let res;
-    try {
-      res = await fetch('https://iam.cloud.ibm.com/identity/token', {
-        method: 'POST',
-        headers: { 'content-type': 'application/x-www-form-urlencoded' },
-        body: `grant_type=urn%3Aibm%3Aparams%3Aoauth%3Agrant-type%3Aapikey&apikey=${encodeURIComponent(WX_API_KEY)}`,
-      });
-    } catch (_) {
-      throw new Error('Network error — could not reach IBM IAM. Check your internet connection.');
-    }
-    if (!res.ok) {
-      if (res.status === 400 || res.status === 401) {
-        throw new Error('Invalid IBM Cloud API key. Update WX_API_KEY in the HTML file.');
-      }
-      throw new Error(`IBM IAM error (HTTP ${res.status}). Check your API key.`);
-    }
-    const data = await res.json();
-    return data.access_token;
-  }
+  /* ── watsonx.ai API — calls Flask proxy, credentials stay server-side ───── */
 
   async function callWatsonx(slideText, budget) {
-    const token     = await getIamToken();
     const truncated = slideText.slice(0, 8000);
     const prompt    = `${SYSTEM_PROMPT}\n\nEvent Plan of Record (extracted from .pptx):\n\n${truncated}\n\nTotal event budget: ${USD.format(budget)}\n\nReturn the JSON allocation now:`;
 
     let res;
     try {
-      res = await fetch(`${WX_URL}/ml/v1/text/generation?version=2023-05-29`, {
+      res = await fetch(WORKER_URL, {
         method: 'POST',
-        headers: {
-          'content-type':  'application/json',
-          'authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          model_id: WX_MODEL,
-          space_id: WX_SPACE_ID,
-          input:    prompt,
-          parameters: {
-            max_new_tokens:     1500,
-            temperature:        0.1,
-            repetition_penalty: 1.05,
-          },
-        }),
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ prompt }),
       });
     } catch (_) {
-      throw new Error('Network error — could not reach IBM watsonx.ai. Check your internet connection.');
+      throw new Error('Network error — could not reach the server. Check your connection.');
     }
 
     if (!res.ok) {
-      let rawErr = '';
-      try { rawErr = await res.text(); } catch (_) {}
-      console.error('[watsonx] HTTP', res.status, rawErr);
       let detail = '';
-      try { detail = JSON.parse(rawErr).errors?.[0]?.message || ''; } catch (_) {}
-      if (res.status === 401 || res.status === 403) {
-        throw new Error(`watsonx.ai authorisation failed (HTTP ${res.status}). Detail: ${rawErr || 'none'}. Check WX_API_KEY and WX_SPACE_ID.`);
-      }
-      throw new Error(`watsonx.ai error (HTTP ${res.status})${detail ? ': ' + detail : ': ' + rawErr}.`);
+      try { detail = (await res.json()).error || ''; } catch (_) {}
+      throw new Error(`Server error (HTTP ${res.status})${detail ? ': ' + detail : ''}.`);
     }
 
     let body;
     try { body = await res.json(); } catch (_) {
-      throw new Error('Received an unreadable response from watsonx.ai.');
+      throw new Error('Received an unreadable response from the server.');
     }
 
-    const raw = body?.results?.[0]?.generated_text ?? '';
+    const raw = body?.generated_text ?? '';
     let allocation;
     try {
       const cleaned = raw.replace(/^```[a-z]*\n?/i, '').replace(/\n?```$/, '').trim();
-      // Extract the first { ... } block in case the model added any surrounding text
       const match = cleaned.match(/\{[\s\S]*\}/);
       if (!match) throw new Error('no JSON object found');
       allocation = JSON.parse(match[0]);
     } catch (_) {
-      console.error('[watsonx] Raw response:\n', raw);
-      throw new Error('watsonx returned an invalid JSON response. See the browser console for details.');
+      console.error('[server] Raw response:\n', raw);
+      throw new Error('The AI returned an invalid JSON response. See the browser console for details.');
     }
 
     validateAllocation(allocation);
