@@ -860,7 +860,7 @@
 <!-- ── Main ───────────────────────────────────────────────────────────────── -->
 <main>
   <h1 class="page-title">Event Spend Allocation</h1>
-  <p class="page-subtitle">Upload a Plan of Record to infer how the investment maps across IBM's 7 marketing taxonomy dimensions.</p>
+  <p class="page-subtitle">Upload a Plan of Record to infer how the investment maps across IBM's 6 marketing taxonomy dimensions.</p>
 
   <!-- Upload card -->
   <div class="card" id="upload-card">
@@ -914,7 +914,7 @@
       <!-- Loading -->
       <div class="loading-bar" id="loading-bar">
         <div class="spinner"></div>
-        <span>Analysing your event plan across 7 IBM taxonomy dimensions…</span>
+        <span>Analysing your event plan across 6 IBM taxonomy dimensions…</span>
       </div>
 
       <!-- Error notification -->
@@ -1330,6 +1330,8 @@ IMPORTANT: Each dimension's items pct values must sum to exactly 100. Use only l
 
   function renderAllDimensions(allocation, budget) {
     budgetSummary.innerHTML = `Total Budget: <strong>${USD.format(budget)}</strong>`;
+    // Show Step 2 card once intent allocation is done
+    document.getElementById('step2-card').style.display = '';
 
     // Rationale panel
     rationaleGrid.innerHTML = '';
