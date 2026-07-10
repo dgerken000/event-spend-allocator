@@ -1706,64 +1706,39 @@ IMPORTANT: Each dimension's items pct values must sum to exactly 100. Use only l
 
   /* ── Post-mortem AI call ────────────────────────────────────────────────── */
 
-  const PM_SYSTEM_PROMPT = `You are an IBM marketing analytics expert. You will be given:
-1. The INTENT allocation — how spend was planned across 6 IBM taxonomy dimensions
-2. Post-event Excel data — actual business impact results
-3. The original Plan of Record slide text — which contains the event name
-
-Your task:
-A) Extract from the Excel data: total attributed pipeline uplift ($), total opportunities influenced (#), and the event name (from the PoR slide text).
-B) For each of the 6 dimensions, analyse the Excel data to determine how the ACTUAL business impact was distributed across the same elements. Express as integer percentages summing to 100 per dimension.
-C) Calculate a return multiple per element: (element_uplift_share / element_spend_share), rounded to 1 decimal.
-
-Return ONLY raw JSON — no markdown, no prose, no code fences:
-{
-  "meta": {"event_name": "...", "pipeline_uplift": N, "opps_influenced": N},
-  "offering_product":  {"items": [{"label":"...", "intent_pct": N, "uplift_pct": N, "multiple": N}, ...]},
-  "market_geography":  {"items": [{"label":"...", "intent_pct": N, "uplift_pct": N, "multiple": N}, ...]},
-  "customer_segment":  {"items": [{"label":"...", "intent_pct": N, "uplift_pct": N, "multiple": N}, ...]},
-  "industry":          {"items": [{"label":"...", "intent_pct": N, "uplift_pct": N, "multiple": N}, ...]},
-  "persona":           {"items": [{"label":"...", "intent_pct": N, "uplift_pct": N, "multiple": N}, ...]},
-  "funnel_stage":      {"items": [{"label":"...", "intent_pct": N, "uplift_pct": N, "multiple": N}, ...]}
-}
-
-Rules:
-- intent_pct values come directly from the provided intent allocation (do not change them)
-- uplift_pct must sum to 100 per dimension
-- multiple = (uplift_pct / intent_pct) rounded to 1 decimal; if intent_pct is 0 use 0
-- Use the same element labels as the intent allocation
-- pipeline_uplift and opps_influenced should be integers extracted from the Excel data; use 0 if not found
-- If the Excel data doesn't mention an element, estimate based on available signals`;
-
   postmortemBtn.addEventListener('click', async () => {
     clearError2();
     setLoading2(true);
     pmSection.classList.remove('visible');
 
-    // Build intent summary for prompt
+    // Compact intent summary
     const intentSummary = DIMENSION_CONFIG.map(dim => {
       const items = (state.allocation[dim.key]?.items || state.allocation[dim.key] || []);
-      const rows  = items.map(it => `  ${it.label}: ${Math.round(it.pct)}%`).join('\n');
-      return `${dim.label}:\n${rows}`;
-    }).join('\n\n');
+      return dim.label + ': ' + items.map(it => `${it.label}=${Math.round(it.pct)}%`).join(', ');
+    }).join('\n');
 
-    const exTrunc  = summariseExcel(state.excelText, 12000);
-    const porTrunc = state.slideText.slice(0, 1000); // event name context from PoR
+    // Extract event name from first 300 chars of PoR
+    const porSnippet = state.slideText.slice(0, 300).replace(/\s+/g, ' ');
 
-    const prompt = `${PM_SYSTEM_PROMPT}
+    // Smart-summarise Excel, keeping most relevant rows
+    const exTrunc = summariseExcel(state.excelText, 5000);
 
-## INTENT ALLOCATION:
+    const prompt = `You are an IBM marketing analytics expert. Analyse post-event Excel data against a spend intent allocation. Return ONLY raw JSON, no markdown, no fences.
+
+SPEND INTENT (6 dimensions):
 ${intentSummary}
 
-## ORIGINAL PLAN OF RECORD (for event name extraction):
-${porTrunc}
+EVENT NAME HINT (from PoR): ${porSnippet}
 
-## POST-EVENT EXCEL DATA:
+POST-EVENT DATA (Excel extract):
 ${exTrunc}
 
 Total event spend: ${USD.format(state.budget)}
 
-Return the JSON post-mortem analysis now:`;
+Return this exact JSON structure:
+{"meta":{"event_name":"...","pipeline_uplift":N,"opps_influenced":N},"offering_product":{"items":[{"label":"...","intent_pct":N,"uplift_pct":N,"multiple":N}]},"market_geography":{"items":[...]},"customer_segment":{"items":[...]},"industry":{"items":[...]},"persona":{"items":[...]},"funnel_stage":{"items":[...]}}
+
+Rules: intent_pct = values from SPEND INTENT above (unchanged). uplift_pct per dimension sums to 100. multiple = uplift_pct/intent_pct rounded to 1dp (0 if intent is 0). pipeline_uplift and opps_influenced extracted from Excel as integers. Use same labels as intent.`;
 
     try {
       const res = await fetch(WORKER_URL, {
