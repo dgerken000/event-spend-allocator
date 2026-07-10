@@ -1785,7 +1785,9 @@ Return the JSON post-mortem analysis now:`;
         pm = JSON.parse(match[0]);
       } catch (_) {
         console.error('[postmortem] raw:', raw);
-        throw new Error('AI returned invalid JSON. See console.');
+        // Show first 300 chars of raw response to help diagnose
+        const preview = raw.slice(0, 300).replace(/\n/g, ' ');
+        throw new Error(`AI returned invalid JSON. Raw response preview: "${preview}"`);
       }
       state.postmortem = pm;
       const pipeline = pm.meta?.pipeline_uplift || 0;
