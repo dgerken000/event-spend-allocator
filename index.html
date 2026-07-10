@@ -983,29 +983,10 @@
           <button class="file-info__remove" id="remove-file-2" title="Remove file">✕</button>
         </div>
 
-        <!-- KPI inputs -->
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1.25rem">
-          <div class="budget-row" style="margin-top:0">
-            <label for="pipeline-input">Attributed Pipeline Uplift ($)</label>
-            <div class="budget-input-wrap">
-              <span class="budget-prefix">$</span>
-              <input type="text" id="pipeline-input" placeholder="0" inputmode="numeric" autocomplete="off" />
-            </div>
-          </div>
-          <div class="budget-row" style="margin-top:0">
-            <label for="opps-input">Opportunities Influenced</label>
-            <div class="budget-input-wrap">
-              <span class="budget-prefix">#</span>
-              <input type="text" id="opps-input" placeholder="0" inputmode="numeric" autocomplete="off" />
-            </div>
-          </div>
-          <div class="budget-row" style="margin-top:0">
-            <label for="event-name-input">Event Name</label>
-            <div class="budget-input-wrap" style="border:1px solid var(--ibm-gray-40)">
-              <input type="text" id="event-name-input" placeholder="e.g. IBM Think 2025" style="border:none;outline:none;padding:0.6rem 0.75rem;font-family:inherit;font-size:14px;width:100%;background:transparent" />
-            </div>
-          </div>
-        </div>
+        <!-- hidden elements kept for JS compatibility -->
+        <input type="hidden" id="pipeline-input" />
+        <input type="hidden" id="opps-input" />
+        <input type="hidden" id="event-name-input" />
 
         <button class="btn-primary" id="postmortem-btn" disabled>
           <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
@@ -1719,20 +1700,6 @@ IMPORTANT: Each dimension's items pct values must sum to exactly 100. Use only l
     updatePostmortemBtn();
   }
 
-  [pipelineInput, oppsInput].forEach(el => {
-    el.addEventListener('input', () => {
-      el.dataset.raw = el.value.replace(/[^0-9]/g, '');
-      updatePostmortemBtn();
-    });
-    el.addEventListener('blur', () => {
-      const v = parseInt(el.dataset.raw || '0', 10);
-      if (v > 0) el.value = v.toLocaleString('en-US');
-    });
-    el.addEventListener('focus', () => {
-      el.value = el.dataset.raw || '';
-    });
-  });
-
   function updatePostmortemBtn() {
     postmortemBtn.disabled = !state.excelText;
   }
@@ -1742,13 +1709,16 @@ IMPORTANT: Each dimension's items pct values must sum to exactly 100. Use only l
   const PM_SYSTEM_PROMPT = `You are an IBM marketing analytics expert. You will be given:
 1. The INTENT allocation — how spend was planned across 6 IBM taxonomy dimensions
 2. Post-event Excel data — actual business impact results
+3. The original Plan of Record slide text — which contains the event name
 
-Your task: for each of the 6 dimensions, analyse the Excel data to determine how the ACTUAL business impact (pipeline, opportunities, engagements) was distributed across the same elements. Express as integer percentages summing to 100 per dimension.
-
-Also calculate a return multiple for each element: (element_uplift_share / element_spend_share). Round to 1 decimal.
+Your task:
+A) Extract from the Excel data: total attributed pipeline uplift ($), total opportunities influenced (#), and the event name (from the PoR slide text).
+B) For each of the 6 dimensions, analyse the Excel data to determine how the ACTUAL business impact was distributed across the same elements. Express as integer percentages summing to 100 per dimension.
+C) Calculate a return multiple per element: (element_uplift_share / element_spend_share), rounded to 1 decimal.
 
 Return ONLY raw JSON — no markdown, no prose, no code fences:
 {
+  "meta": {"event_name": "...", "pipeline_uplift": N, "opps_influenced": N},
   "offering_product":  {"items": [{"label":"...", "intent_pct": N, "uplift_pct": N, "multiple": N}, ...]},
   "market_geography":  {"items": [{"label":"...", "intent_pct": N, "uplift_pct": N, "multiple": N}, ...]},
   "customer_segment":  {"items": [{"label":"...", "intent_pct": N, "uplift_pct": N, "multiple": N}, ...]},
@@ -1758,10 +1728,11 @@ Return ONLY raw JSON — no markdown, no prose, no code fences:
 }
 
 Rules:
-- intent_pct values per dimension come directly from the provided intent allocation (do not change them)
+- intent_pct values come directly from the provided intent allocation (do not change them)
 - uplift_pct must sum to 100 per dimension
 - multiple = (uplift_pct / intent_pct) rounded to 1 decimal; if intent_pct is 0 use 0
 - Use the same element labels as the intent allocation
+- pipeline_uplift and opps_influenced should be integers extracted from the Excel data; use 0 if not found
 - If the Excel data doesn't mention an element, estimate based on available signals`;
 
   postmortemBtn.addEventListener('click', async () => {
@@ -1776,21 +1747,21 @@ Rules:
       return `${dim.label}:\n${rows}`;
     }).join('\n\n');
 
-    const pipeline = parseInt(pipelineInput.dataset?.raw || '0', 10);
-    const opps     = parseInt(oppsInput.dataset?.raw || '0', 10);
-    const exTrunc  = state.excelText.slice(0, 8000);
+    const exTrunc  = state.excelText.slice(0, 7000);
+    const porTrunc = state.slideText.slice(0, 1000); // event name context from PoR
 
     const prompt = `${PM_SYSTEM_PROMPT}
 
 ## INTENT ALLOCATION:
 ${intentSummary}
 
+## ORIGINAL PLAN OF RECORD (for event name extraction):
+${porTrunc}
+
 ## POST-EVENT EXCEL DATA:
 ${exTrunc}
 
 Total event spend: ${USD.format(state.budget)}
-Attributed pipeline uplift: ${USD.format(pipeline)}
-Opportunities influenced: ${opps}
 
 Return the JSON post-mortem analysis now:`;
 
@@ -1817,6 +1788,8 @@ Return the JSON post-mortem analysis now:`;
         throw new Error('AI returned invalid JSON. See console.');
       }
       state.postmortem = pm;
+      const pipeline = pm.meta?.pipeline_uplift || 0;
+      const opps     = pm.meta?.opps_influenced || 0;
       renderPostmortem(pm, pipeline, opps);
       pmSection.classList.add('visible');
       pmSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1831,7 +1804,7 @@ Return the JSON post-mortem analysis now:`;
 
   function renderPostmortem(pm, pipeline, opps) {
     const budget    = state.budget;
-    const eventName = eventNameInput.value.trim() || 'Event Post-Mortem';
+    const eventName = pm.meta?.event_name || 'Event Post-Mortem';
     const returnMult= pipeline > 0 && budget > 0 ? (pipeline / budget).toFixed(1) : '—';
     const avgMult   = parseFloat(returnMult) || 1;
 
