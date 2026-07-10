@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     /* ── Reset & tokens ─────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -644,6 +645,198 @@
     }
     .btn-add-confirm:hover { background: #0e6027; }
 
+    /* ── Step 2 — Post-mortem upload ────────────────────────────────────── */
+    .step2-card { margin-top: 2rem; }
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      color: var(--ibm-blue);
+      margin-bottom: 0.5rem;
+    }
+    .step-badge__num {
+      width: 18px; height: 18px;
+      background: var(--ibm-blue);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700;
+    }
+
+    /* ── Post-mortem summary page ───────────────────────────────────────── */
+    #postmortem-section { display: none; }
+    #postmortem-section.visible { display: block; }
+
+    .pm-header {
+      background: var(--ibm-white);
+      border: 1px solid var(--ibm-gray-20);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .pm-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--ibm-blue);
+      margin-bottom: 0.25rem;
+    }
+    .pm-title {
+      font-size: 24px;
+      font-weight: 300;
+      color: var(--ibm-gray-100);
+      margin-bottom: 0.25rem;
+    }
+    .pm-meta {
+      font-size: 11px;
+      color: var(--ibm-gray-60);
+    }
+
+    .pm-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--ibm-gray-20);
+      border: 1px solid var(--ibm-gray-20);
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 680px) { .pm-kpis { grid-template-columns: repeat(2,1fr); } }
+    .pm-kpi {
+      background: var(--ibm-white);
+      padding: 1rem 1.25rem;
+    }
+    .pm-kpi__label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--ibm-gray-60);
+      margin-bottom: 4px;
+    }
+    .pm-kpi__value {
+      font-size: 26px;
+      font-weight: 300;
+      color: var(--ibm-gray-100);
+    }
+    .pm-kpi__value.positive { color: var(--ibm-green); }
+
+    /* ── Paired bar rows ────────────────────────────────────────────────── */
+    .pm-table {
+      background: var(--ibm-white);
+      border: 1px solid var(--ibm-gray-20);
+      padding: 0.75rem 1.25rem 1rem;
+      margin-bottom: 1rem;
+    }
+    .pm-table__header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--ibm-gray-40);
+      border-bottom: 1px solid var(--ibm-gray-20);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .pm-row {
+      display: grid;
+      grid-template-columns: 160px 1fr 180px;
+      gap: 0.75rem;
+      align-items: start;
+      margin-bottom: 1.25rem;
+    }
+    @media (max-width: 680px) {
+      .pm-row { grid-template-columns: 1fr; }
+    }
+    .pm-row__label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ibm-gray-100);
+      padding-top: 4px;
+    }
+    .pm-bars { display: flex; flex-direction: column; gap: 3px; }
+    .pm-bar-line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pm-bar-type {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      color: var(--ibm-gray-60);
+      width: 38px;
+      flex-shrink: 0;
+    }
+    .pm-bar-track {
+      flex: 1;
+      height: 24px;
+      display: flex;
+      gap: 1px;
+      background: var(--ibm-gray-20);
+      border-radius: 1px;
+      overflow: hidden;
+    }
+    .pm-bar-seg {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: #fff;
+      overflow: hidden;
+      white-space: nowrap;
+      transition: width 0.4s ease;
+    }
+    .pm-bar-seg span { padding: 0 3px; }
+    .pm-transitions {
+      font-size: 10px;
+      color: var(--ibm-gray-60);
+      margin-top: 3px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 10px;
+    }
+    .pm-transitions span::before {
+      content: '■ ';
+      font-size: 8px;
+    }
+    .pm-multiples {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-top: 4px;
+    }
+    .pm-mult-item {
+      font-size: 11px;
+      color: var(--ibm-gray-80);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .pm-mult-item::before {
+      content: '■';
+      font-size: 9px;
+    }
+    .pm-mult-val {
+      font-weight: 700;
+    }
+    .pm-mult-val.above-avg { color: var(--ibm-green); }
+    .pm-mult-val.below-avg { color: var(--ibm-gray-60); }
+
+    .pm-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
     /* ── Footer ──────────────────────────────────────────────────────────── */
     footer {
       text-align: center;
@@ -737,7 +930,7 @@
     <div class="results-banner">
       <div>
         <div class="results-banner__budget" id="budget-summary">Total Budget: <strong>—</strong></div>
-        <div class="results-banner__sub">Analysed across 7 IBM marketing taxonomy dimensions</div>
+        <div class="results-banner__sub">Analysed across 6 IBM marketing taxonomy dimensions</div>
       </div>
       <div class="results-banner__actions">
         <button class="btn-secondary" id="export-btn">
@@ -761,7 +954,89 @@
     <!-- Dimension panels grid -->
     <div class="dim-grid" id="dim-grid"></div>
 
+    <!-- Step 2: Post-mortem upload -->
+    <div class="card step2-card" id="step2-card" style="display:none">
+      <div class="card__header">
+        <div class="step-badge"><span class="step-badge__num">2</span> Post-Event Analysis</div>
+        <div class="card__title">Upload Post-Event Impact Data</div>
+        <div class="card__hint">Upload an Excel (.xlsx) file with post-event results. The AI will map your data to the same 6 dimensions and generate an Intent vs. Uplift post-mortem.</div>
+      </div>
+      <div class="card__body">
+        <div class="drop-zone" id="drop-zone-2">
+          <svg class="drop-zone__icon" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+            <path d="M28 7H20V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v3H4a2 2 0 00-2 2v18a2 2 0 002 2h24a2 2 0 002-2V9a2 2 0 00-2-2zM14 4h4v3h-4zm14 23H4V9h24z"/>
+            <path d="M14 19.6l-3.3-3.3-1.4 1.4 4 4a1 1 0 001.4 0l8-8-1.4-1.4z"/>
+          </svg>
+          <div class="drop-zone__label">Drag &amp; drop your .xlsx file here, or <strong id="browse-link-2">browse to upload</strong></div>
+          <div class="drop-zone__sub">Excel (.xlsx) files only</div>
+          <input type="file" id="file-input-2" accept=".xlsx" />
+        </div>
+        <div class="file-info" id="file-info-2">
+          <svg class="file-info__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+            <path d="M28 7H20V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v3H4a2 2 0 00-2 2v18a2 2 0 002 2h24a2 2 0 002-2V9a2 2 0 00-2-2zM14 4h4v3h-4zm14 23H4V9h24z"/>
+          </svg>
+          <div>
+            <div class="file-info__name" id="file-name-2">—</div>
+            <div class="file-info__meta" id="file-meta-2"></div>
+          </div>
+          <div class="file-info__slides" id="sheet-count"></div>
+          <button class="file-info__remove" id="remove-file-2" title="Remove file">✕</button>
+        </div>
+
+        <!-- KPI inputs -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1.25rem">
+          <div class="budget-row" style="margin-top:0">
+            <label for="pipeline-input">Attributed Pipeline Uplift ($)</label>
+            <div class="budget-input-wrap">
+              <span class="budget-prefix">$</span>
+              <input type="text" id="pipeline-input" placeholder="0" inputmode="numeric" autocomplete="off" />
+            </div>
+          </div>
+          <div class="budget-row" style="margin-top:0">
+            <label for="opps-input">Opportunities Influenced</label>
+            <div class="budget-input-wrap">
+              <span class="budget-prefix">#</span>
+              <input type="text" id="opps-input" placeholder="0" inputmode="numeric" autocomplete="off" />
+            </div>
+          </div>
+          <div class="budget-row" style="margin-top:0">
+            <label for="event-name-input">Event Name</label>
+            <div class="budget-input-wrap" style="border:1px solid var(--ibm-gray-40)">
+              <input type="text" id="event-name-input" placeholder="e.g. IBM Think 2025" style="border:none;outline:none;padding:0.6rem 0.75rem;font-family:inherit;font-size:14px;width:100%;background:transparent" />
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="postmortem-btn" disabled>
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+            <path d="M16 2a14 14 0 100 28A14 14 0 0016 2zm0 26A12 12 0 114 16 12 12 0 0116 28zm1-14h6v2h-6v6h-2v-6H9v-2h6V8h2z"/>
+          </svg>
+          Generate Post-Mortem
+        </button>
+        <div class="loading-bar" id="loading-bar-2">
+          <div class="spinner"></div>
+          <span>Analysing post-event data and mapping to taxonomy dimensions…</span>
+        </div>
+        <div class="notification" id="error-box-2"></div>
+      </div>
+    </div>
+
+  </div><!-- end results-section -->
+
+  <!-- Post-mortem section -->
+  <div id="postmortem-section">
+    <div class="pm-actions">
+      <button class="btn-secondary" id="pm-export-btn">
+        <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+          <path d="M26 24v4H6v-4H4v4a2 2 0 002 2h20a2 2 0 002-2v-4zM26 14l-1.41-1.41L17 20.17V2h-2v18.17l-7.59-7.58L6 14l10 10 10-10z"/>
+        </svg>
+        Export CSV
+      </button>
+      <button class="btn-ghost" id="pm-reset-btn">Start Over</button>
+    </div>
+    <div id="pm-content"></div>
   </div>
+
 </main>
 
 <footer>Made with IBM Bob</footer>
@@ -1300,21 +1575,28 @@ IMPORTANT: Each dimension's items pct values must sum to exactly 100. Use only l
 
   /* ── Reset ──────────────────────────────────────────────────────────────── */
 
-  resetBtn.addEventListener('click', () => {
-    state.slideText  = '';
-    state.budget     = 0;
-    state.allocation = null;
-    state.fileName   = '';
-    state.slideCount = 0;
+  resetBtn.addEventListener('click', () => fullReset());
+
+  function fullReset() {
+    state.slideText      = '';
+    state.budget         = 0;
+    state.allocation     = null;
+    state.fileName       = '';
+    state.slideCount     = 0;
+    state.excelText      = '';
+    state.postmortem     = null;
 
     clearFile();
     clearError();
     budgetInput.value = '';
     resultsSection.classList.remove('visible');
     dimGrid.innerHTML = '';
+    document.getElementById('step2-card').style.display = 'none';
+    document.getElementById('postmortem-section').classList.remove('visible');
+    document.getElementById('pm-content').innerHTML = '';
     updateAnalyseBtn();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  }
 
   /* ── Helpers ────────────────────────────────────────────────────────────── */
 
@@ -1353,6 +1635,338 @@ IMPORTANT: Each dimension's items pct values must sum to exactly 100. Use only l
     if (bytes < 1048576)    return (bytes / 1024).toFixed(1) + ' KB';
     return (bytes / 1048576).toFixed(1) + ' MB';
   }
+  /* ══════════════════════════════════════════════════════════════════════════
+   * STEP 2 — POST-MORTEM
+   * ══════════════════════════════════════════════════════════════════════════ */
+
+  // Extend state
+  state.excelText  = '';
+  state.postmortem = null;
+
+  const dropZone2     = document.getElementById('drop-zone-2');
+  const fileInput2    = document.getElementById('file-input-2');
+  const browseLink2   = document.getElementById('browse-link-2');
+  const fileInfo2     = document.getElementById('file-info-2');
+  const fileName2El   = document.getElementById('file-name-2');
+  const fileMeta2El   = document.getElementById('file-meta-2');
+  const sheetCountEl  = document.getElementById('sheet-count');
+  const removeFile2   = document.getElementById('remove-file-2');
+  const pipelineInput = document.getElementById('pipeline-input');
+  const oppsInput     = document.getElementById('opps-input');
+  const eventNameInput= document.getElementById('event-name-input');
+  const postmortemBtn = document.getElementById('postmortem-btn');
+  const loadingBar2   = document.getElementById('loading-bar-2');
+  const errorBox2     = document.getElementById('error-box-2');
+  const pmSection     = document.getElementById('postmortem-section');
+  const pmContent     = document.getElementById('pm-content');
+  const pmExportBtn   = document.getElementById('pm-export-btn');
+  const pmResetBtn    = document.getElementById('pm-reset-btn');
+
+  /* ── Excel upload ───────────────────────────────────────────────────────── */
+
+  browseLink2.addEventListener('click', () => fileInput2.click());
+  dropZone2.addEventListener('click', e => { if (e.target !== browseLink2) fileInput2.click(); });
+  dropZone2.addEventListener('dragover', e => { e.preventDefault(); dropZone2.classList.add('dragover'); });
+  dropZone2.addEventListener('dragleave', () => dropZone2.classList.remove('dragover'));
+  dropZone2.addEventListener('drop', e => {
+    e.preventDefault(); dropZone2.classList.remove('dragover');
+    const f = e.dataTransfer.files[0]; if (f) handleExcel(f);
+  });
+  fileInput2.addEventListener('change', () => {
+    if (fileInput2.files[0]) handleExcel(fileInput2.files[0]);
+    fileInput2.value = '';
+  });
+  removeFile2.addEventListener('click', () => clearExcel());
+
+  async function handleExcel(file) {
+    clearError2();
+    if (!file.name.toLowerCase().endsWith('.xlsx')) {
+      showError2('Only .xlsx files are accepted.');
+      return;
+    }
+    fileName2El.textContent = file.name;
+    fileMeta2El.textContent = formatBytes(file.size);
+    sheetCountEl.textContent = 'Reading…';
+    fileInfo2.classList.add('visible');
+
+    try {
+      const buf  = await file.arrayBuffer();
+      const wb   = XLSX.read(buf, { type: 'array' });
+      const rows = [];
+      wb.SheetNames.forEach(name => {
+        const ws   = wb.Sheets[name];
+        const data = XLSX.utils.sheet_to_csv(ws);
+        rows.push(`=== Sheet: ${name} ===\n${data}`);
+      });
+      state.excelText = rows.join('\n\n');
+      sheetCountEl.textContent = `✓ ${wb.SheetNames.length} sheet${wb.SheetNames.length !== 1 ? 's' : ''} read`;
+      console.log('[Excel] Extracted:\n', state.excelText);
+    } catch (err) {
+      showError2('Failed to read the .xlsx file.');
+      clearExcel(); return;
+    }
+    updatePostmortemBtn();
+  }
+
+  function clearExcel() {
+    state.excelText = '';
+    fileInfo2.classList.remove('visible');
+    fileName2El.textContent = '—';
+    fileMeta2El.textContent = '';
+    sheetCountEl.textContent = '';
+    updatePostmortemBtn();
+  }
+
+  [pipelineInput, oppsInput].forEach(el => {
+    el.addEventListener('input', () => {
+      el.dataset.raw = el.value.replace(/[^0-9]/g, '');
+      updatePostmortemBtn();
+    });
+    el.addEventListener('blur', () => {
+      const v = parseInt(el.dataset.raw || '0', 10);
+      if (v > 0) el.value = v.toLocaleString('en-US');
+    });
+    el.addEventListener('focus', () => {
+      el.value = el.dataset.raw || '';
+    });
+  });
+
+  function updatePostmortemBtn() {
+    postmortemBtn.disabled = !state.excelText;
+  }
+
+  /* ── Post-mortem AI call ────────────────────────────────────────────────── */
+
+  const PM_SYSTEM_PROMPT = `You are an IBM marketing analytics expert. You will be given:
+1. The INTENT allocation — how spend was planned across 6 IBM taxonomy dimensions
+2. Post-event Excel data — actual business impact results
+
+Your task: for each of the 6 dimensions, analyse the Excel data to determine how the ACTUAL business impact (pipeline, opportunities, engagements) was distributed across the same elements. Express as integer percentages summing to 100 per dimension.
+
+Also calculate a return multiple for each element: (element_uplift_share / element_spend_share). Round to 1 decimal.
+
+Return ONLY raw JSON — no markdown, no prose, no code fences:
+{
+  "offering_product":  {"items": [{"label":"...", "intent_pct": N, "uplift_pct": N, "multiple": N}, ...]},
+  "market_geography":  {"items": [{"label":"...", "intent_pct": N, "uplift_pct": N, "multiple": N}, ...]},
+  "customer_segment":  {"items": [{"label":"...", "intent_pct": N, "uplift_pct": N, "multiple": N}, ...]},
+  "industry":          {"items": [{"label":"...", "intent_pct": N, "uplift_pct": N, "multiple": N}, ...]},
+  "persona":           {"items": [{"label":"...", "intent_pct": N, "uplift_pct": N, "multiple": N}, ...]},
+  "funnel_stage":      {"items": [{"label":"...", "intent_pct": N, "uplift_pct": N, "multiple": N}, ...]}
+}
+
+Rules:
+- intent_pct values per dimension come directly from the provided intent allocation (do not change them)
+- uplift_pct must sum to 100 per dimension
+- multiple = (uplift_pct / intent_pct) rounded to 1 decimal; if intent_pct is 0 use 0
+- Use the same element labels as the intent allocation
+- If the Excel data doesn't mention an element, estimate based on available signals`;
+
+  postmortemBtn.addEventListener('click', async () => {
+    clearError2();
+    setLoading2(true);
+    pmSection.classList.remove('visible');
+
+    // Build intent summary for prompt
+    const intentSummary = DIMENSION_CONFIG.map(dim => {
+      const items = (state.allocation[dim.key]?.items || state.allocation[dim.key] || []);
+      const rows  = items.map(it => `  ${it.label}: ${Math.round(it.pct)}%`).join('\n');
+      return `${dim.label}:\n${rows}`;
+    }).join('\n\n');
+
+    const pipeline = parseInt(pipelineInput.dataset?.raw || '0', 10);
+    const opps     = parseInt(oppsInput.dataset?.raw || '0', 10);
+    const exTrunc  = state.excelText.slice(0, 8000);
+
+    const prompt = `${PM_SYSTEM_PROMPT}
+
+## INTENT ALLOCATION:
+${intentSummary}
+
+## POST-EVENT EXCEL DATA:
+${exTrunc}
+
+Total event spend: ${USD.format(state.budget)}
+Attributed pipeline uplift: ${USD.format(pipeline)}
+Opportunities influenced: ${opps}
+
+Return the JSON post-mortem analysis now:`;
+
+    try {
+      const res = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ prompt }),
+      });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        throw new Error(d.error || `Server error (HTTP ${res.status})`);
+      }
+      const body = await res.json();
+      const raw  = body?.generated_text ?? '';
+      let pm;
+      try {
+        const cleaned = raw.replace(/^```[a-z]*\n?/i,'').replace(/\n?```$/,'').trim();
+        const match   = cleaned.match(/\{[\s\S]*\}/);
+        if (!match) throw new Error('no JSON found');
+        pm = JSON.parse(match[0]);
+      } catch (_) {
+        console.error('[postmortem] raw:', raw);
+        throw new Error('AI returned invalid JSON. See console.');
+      }
+      state.postmortem = pm;
+      renderPostmortem(pm, pipeline, opps);
+      pmSection.classList.add('visible');
+      pmSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      showError2(err.message || 'Unexpected error.');
+    } finally {
+      setLoading2(false);
+    }
+  });
+
+  /* ── Render post-mortem ─────────────────────────────────────────────────── */
+
+  function renderPostmortem(pm, pipeline, opps) {
+    const budget    = state.budget;
+    const eventName = eventNameInput.value.trim() || 'Event Post-Mortem';
+    const returnMult= pipeline > 0 && budget > 0 ? (pipeline / budget).toFixed(1) : '—';
+    const avgMult   = parseFloat(returnMult) || 1;
+
+    // Header
+    let html = `
+      <div class="pm-header">
+        <div class="pm-eyebrow">Marketing Investment Intent Capture &nbsp;·&nbsp; Event Post-Mortem</div>
+        <div class="pm-title">${escHtml(eventName)}: Spend Intent vs. Attributed Uplift</div>
+        <div class="pm-meta">Intent allocation vs. post-event measured uplift across 6 IBM taxonomy dimensions</div>
+      </div>
+
+      <div class="pm-kpis">
+        <div class="pm-kpi">
+          <div class="pm-kpi__label">Total Event Spend</div>
+          <div class="pm-kpi__value">${USD.format(budget)}</div>
+        </div>
+        <div class="pm-kpi">
+          <div class="pm-kpi__label">Attributed Pipeline Uplift</div>
+          <div class="pm-kpi__value">${pipeline > 0 ? USD.format(pipeline) : '—'}</div>
+        </div>
+        <div class="pm-kpi">
+          <div class="pm-kpi__label">Return on Event Spend</div>
+          <div class="pm-kpi__value positive">${returnMult !== '—' ? returnMult + '×' : '—'}</div>
+        </div>
+        <div class="pm-kpi">
+          <div class="pm-kpi__label">Opportunities Influenced</div>
+          <div class="pm-kpi__value">${opps > 0 ? opps.toLocaleString() : '—'}</div>
+        </div>
+      </div>
+
+      <div class="pm-table">
+        <div class="pm-table__header">
+          <span>Spend Intent (top) vs. Measured Uplift (bottom) — % share, aligned scale</span>
+          <span style="color:var(--ibm-green)">Return Multiple — Uplift $ ÷ Spend $ &nbsp;·&nbsp; Green ≥ ${returnMult}× avg</span>
+        </div>`;
+
+    DIMENSION_CONFIG.forEach(dim => {
+      const dimData = pm[dim.key];
+      if (!dimData?.items?.length) return;
+      const items = dimData.items;
+
+      // Intent bar
+      const intentSegs = items.map((it, i) => {
+        const w = Math.max(it.intent_pct || 0, 0);
+        const c = CAT_COLOURS[i % CAT_COLOURS.length];
+        return `<div class="pm-bar-seg" style="width:${w}%;background:${c};flex-shrink:0">
+          ${w >= 7 ? `<span>${w}</span>` : ''}
+        </div>`;
+      }).join('');
+
+      // Uplift bar
+      const upliftSegs = items.map((it, i) => {
+        const w = Math.max(it.uplift_pct || 0, 0);
+        const c = CAT_COLOURS[i % CAT_COLOURS.length];
+        return `<div class="pm-bar-seg" style="width:${w}%;background:${c};flex-shrink:0;opacity:0.75">
+          ${w >= 7 ? `<span>${w}</span>` : ''}
+        </div>`;
+      }).join('');
+
+      // Transitions
+      const transitions = items.map((it, i) => {
+        const c = CAT_COLOURS[i % CAT_COLOURS.length];
+        return `<span style="color:${c}">${escHtml(it.label)} ${it.intent_pct}→${it.uplift_pct}%</span>`;
+      }).join('');
+
+      // Return multiples
+      const multiples = items.map((it, i) => {
+        const c    = CAT_COLOURS[i % CAT_COLOURS.length];
+        const mult = it.multiple ?? 0;
+        const cls  = mult >= avgMult ? 'above-avg' : 'below-avg';
+        const shortLabel = it.label.length > 20 ? it.label.slice(0, 18) + '…' : it.label;
+        return `<div class="pm-mult-item" style="--swatch:${c}">
+          <span style="color:${c}">■</span>
+          ${escHtml(shortLabel)} <span class="pm-mult-val ${cls}">${mult}×</span>
+        </div>`;
+      }).join('');
+
+      html += `
+        <div class="pm-row">
+          <div class="pm-row__label">${escHtml(dim.label)}</div>
+          <div class="pm-bars">
+            <div class="pm-bar-line">
+              <span class="pm-bar-type">Intent</span>
+              <div class="pm-bar-track">${intentSegs}</div>
+            </div>
+            <div class="pm-bar-line">
+              <span class="pm-bar-type">Uplift</span>
+              <div class="pm-bar-track">${upliftSegs}</div>
+            </div>
+            <div class="pm-transitions">${transitions}</div>
+          </div>
+          <div class="pm-multiples">${multiples}</div>
+        </div>`;
+    });
+
+    html += `</div>`; // close pm-table
+    pmContent.innerHTML = html;
+  }
+
+  /* ── PM Export CSV ──────────────────────────────────────────────────────── */
+
+  pmExportBtn.addEventListener('click', () => {
+    if (!state.postmortem) return;
+    const rows = ['Dimension,Element,Intent %,Uplift %,Return Multiple'];
+    for (const dim of DIMENSION_CONFIG) {
+      const items = state.postmortem[dim.key]?.items || [];
+      for (const it of items) {
+        rows.push([
+          csvEsc(dim.label), csvEsc(it.label),
+          it.intent_pct, it.uplift_pct, it.multiple
+        ].join(','));
+      }
+    }
+    const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'event-postmortem.csv'; a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  pmResetBtn.addEventListener('click', () => fullReset());
+
+  /* ── Step 2 helpers ─────────────────────────────────────────────────────── */
+
+  function setLoading2(on) {
+    postmortemBtn.disabled = on;
+    loadingBar2.classList.toggle('visible', on);
+  }
+  function showError2(msg) {
+    errorBox2.innerHTML = `<strong>Error:</strong> ${escHtml(msg)}`;
+    errorBox2.classList.add('visible');
+  }
+  function clearError2() {
+    errorBox2.textContent = '';
+    errorBox2.classList.remove('visible');
+  }
+
 </script>
 
 </body>
