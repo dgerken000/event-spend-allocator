@@ -525,21 +525,124 @@
       white-space: nowrap;
       width: 90px;
     }
-    .pct-input {
-      width: 52px;
+    /* ── Slider ──────────────────────────────────────────────────────────── */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pct-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--ibm-gray-20);
+      outline: none;
+      cursor: pointer;
+    }
+    .pct-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--ibm-blue);
+      cursor: pointer;
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 1px var(--ibm-blue);
+    }
+    .pct-slider::-moz-range-thumb {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--ibm-blue);
+      cursor: pointer;
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 1px var(--ibm-blue);
+    }
+    .pct-slider:focus::-webkit-slider-thumb {
+      box-shadow: 0 0 0 3px rgba(15,98,254,0.3);
+    }
+    .pct-value {
+      min-width: 36px;
       text-align: right;
-      border: 1px solid var(--ibm-gray-20);
-      padding: 2px 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ibm-gray-100);
+    }
+
+    /* ── Dim card actions ────────────────────────────────────────────────── */
+    .dim-card__actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 0.875rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--ibm-gray-20);
+    }
+    .btn-dim {
+      flex: 1;
+      padding: 5px 8px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 2px;
+      letter-spacing: 0.16px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-dim--normalise {
+      background: var(--ibm-blue);
+      color: #fff;
+      border: none;
+    }
+    .btn-dim--normalise:hover { background: var(--ibm-blue-hover); }
+    .btn-dim--add {
+      background: var(--ibm-white);
+      color: var(--ibm-blue);
+      border: 1px solid var(--ibm-blue);
+    }
+    .btn-dim--add:hover { background: var(--ibm-blue); color: #fff; }
+    .add-form {
+      display: none;
+      margin-top: 0.5rem;
+      gap: 6px;
+      align-items: center;
+    }
+    .add-form.visible { display: flex; }
+    .add-form input[type="text"] {
+      flex: 1;
+      border: 1px solid var(--ibm-gray-40);
+      padding: 4px 8px;
       font-family: inherit;
       font-size: 12px;
-      color: var(--ibm-gray-100);
-      background: var(--ibm-white);
+      outline: none;
     }
-    .pct-input:focus {
+    .add-form input[type="text"]:focus {
       outline: 2px solid var(--ibm-blue);
       outline-offset: -1px;
-      border-color: transparent;
     }
+    .add-form input[type="number"] {
+      width: 56px;
+      border: 1px solid var(--ibm-gray-40);
+      padding: 4px 6px;
+      font-family: inherit;
+      font-size: 12px;
+      text-align: right;
+      outline: none;
+    }
+    .add-form input[type="number"]:focus {
+      outline: 2px solid var(--ibm-blue);
+      outline-offset: -1px;
+    }
+    .btn-add-confirm {
+      padding: 4px 10px;
+      background: var(--ibm-green);
+      color: #fff;
+      border: none;
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+    .btn-add-confirm:hover { background: #0e6027; }
 
     /* ── Footer ──────────────────────────────────────────────────────────── */
     footer {
@@ -675,26 +778,24 @@
   ];
 
   const DIMENSION_CONFIG = [
-    { key: 'offering_product', label: 'Offering / Product',                    badge: 'strategic' },
-    { key: 'market_geography', label: 'Market / Geography',                    badge: 'strategic' },
-    { key: 'customer_segment', label: 'Customer Segment',                      badge: 'strategic' },
-    { key: 'activity_type',    label: 'Activity Type / Communication Category',badge: 'strategic' },
-    { key: 'industry',         label: 'Industry',                              badge: 'strategic' },
-    { key: 'persona',          label: 'Persona',                               badge: 'strategic' },
-    { key: 'funnel_stage',     label: 'Funnel Stage',                          badge: 'funnel'    },
+    { key: 'offering_product', label: 'Offering / Product',  badge: 'strategic' },
+    { key: 'market_geography', label: 'Market / Geography',  badge: 'strategic' },
+    { key: 'customer_segment', label: 'Customer Segment',    badge: 'strategic' },
+    { key: 'industry',         label: 'Industry',            badge: 'strategic' },
+    { key: 'persona',          label: 'Persona',             badge: 'strategic' },
+    { key: 'funnel_stage',     label: 'Funnel Stage',        badge: 'funnel'    },
   ];
 
-  const SYSTEM_PROMPT = `You are an IBM marketing taxonomy expert. Analyse the provided corporate event Plan of Record (PoR) and allocate 100% of the event investment across each of IBM's 7 marketing taxonomy dimensions.
+  const SYSTEM_PROMPT = `You are an IBM marketing taxonomy expert. Analyse the provided corporate event Plan of Record (PoR) and allocate 100% of the event investment across each of IBM's 6 marketing taxonomy dimensions.
 
 For each dimension, select ONLY the elements that are genuinely relevant to this event (2–7 elements per dimension). Assign integer percentages that sum to exactly 100 for each dimension. Add a concise rationale (1–2 sentences max) explaining why you allocated the spend that way for that dimension.
 
-Return ONLY a raw JSON object — no markdown, no prose, no code fences. The JSON must have exactly these 7 keys:
+Return ONLY a raw JSON object — no markdown, no prose, no code fences. The JSON must have exactly these 6 keys:
 
 {
   "offering_product":  {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]},
   "market_geography":  {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]},
   "customer_segment":  {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]},
-  "activity_type":     {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]},
   "industry":          {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]},
   "persona":           {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]},
   "funnel_stage":      {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]}
@@ -710,9 +811,6 @@ Americas, North America, Latin America, EMEA, Europe, Middle East & Africa, Asia
 
 ### customer_segment — IBM ERDM Technology segments:
 Enterprise (>$1B revenue), Upper Mid-Market ($500M–$1B), Mid-Market ($100M–$500M), Small & Medium Business (<$100M), Public Sector / Government, Strategic Accounts (named accounts / ABM), Global System Integrators (GSIs), Independent Software Vendors (ISVs)
-
-### activity_type — IBM ERDM activity taxonomy:
-Field Event (owned), Third-Party Event / Sponsorship, Webinar / Virtual Event, Executive Engagement, Digital Advertising, Content Syndication, Social Media, Email / Nurture, Thought Leadership / PR, Partner Co-Marketing, Sales Enablement
 
 ### industry — IBM standard industry verticals:
 Cross-Industry, Banking & Financial Markets, Insurance, Healthcare & Life Sciences, Telecommunications, Retail & Consumer Products, Government & Public Sector, Energy & Utilities, Manufacturing, Transportation & Logistics, Media & Entertainment, Education
@@ -1008,75 +1106,137 @@ IMPORTANT: Each dimension's items pct values must sum to exactly 100. Use only l
     });
     card.appendChild(track);
 
-    // Legend table
+    // Legend table — sliders
     const tbl = document.createElement('table');
     tbl.className = 'legend-table';
     items.forEach((item, i) => {
       const colour  = CAT_COLOURS[i % CAT_COLOURS.length];
       const dollars = budget * item.pct / 100;
+      const pct     = Math.round(item.pct);
       const tr = document.createElement('tr');
       tr.dataset.dimKey = dimCfg.key;
       tr.dataset.idx    = i;
       tr.innerHTML = `
         <td class="td-swatch"><span class="swatch" style="background:${colour}"></span></td>
         <td class="td-label">${escHtml(item.label)}</td>
-        <td class="td-pct">
-          <input type="number" class="pct-input"
-            min="0" max="100" step="0.1"
-            value="${item.pct}"
-            data-dim-key="${dimCfg.key}"
-            data-idx="${i}"
-            aria-label="${escHtml(item.label)} percentage" />
+        <td style="width:120px;padding:4px 6px">
+          <div class="slider-row">
+            <input type="range" class="pct-slider"
+              min="0" max="100" step="1"
+              value="${pct}"
+              data-dim-key="${dimCfg.key}"
+              data-idx="${i}"
+              aria-label="${escHtml(item.label)} percentage" />
+            <span class="pct-value" data-dim-key="${dimCfg.key}" data-idx="${i}">${pct}%</span>
+          </div>
         </td>
         <td class="td-dollar" data-dim-key="${dimCfg.key}" data-idx="${i}">${USD.format(dollars)}</td>`;
       tbl.appendChild(tr);
     });
     card.appendChild(tbl);
 
+    // Per-dimension action buttons
+    const actions = document.createElement('div');
+    actions.className = 'dim-card__actions';
+    actions.innerHTML = `
+      <button class="btn-dim btn-dim--normalise" data-dim-key="${dimCfg.key}">Normalise to 100%</button>
+      <button class="btn-dim btn-dim--add" data-dim-key="${dimCfg.key}">+ Add value</button>`;
+
+    // Add-value inline form
+    const addForm = document.createElement('div');
+    addForm.className = 'add-form';
+    addForm.dataset.dimKey = dimCfg.key;
+    addForm.innerHTML = `
+      <input type="text" placeholder="Label" class="add-label-input" />
+      <input type="number" placeholder="%" class="add-pct-input" min="0" max="100" step="1" value="0" />
+      <button class="btn-add-confirm" data-dim-key="${dimCfg.key}">Add</button>`;
+
+    card.appendChild(actions);
+    card.appendChild(addForm);
+
     return card;
   }
 
-  /* ── Manual adjustment ──────────────────────────────────────────────────── */
+  /* ── Manual adjustment — sliders ────────────────────────────────────────── */
 
-  document.addEventListener('change', e => {
-    if (!e.target.classList.contains('pct-input')) return;
+  document.addEventListener('input', e => {
+    if (!e.target.classList.contains('pct-slider')) return;
     const dimKey = e.target.dataset.dimKey;
     const idx    = parseInt(e.target.dataset.idx, 10);
     const items  = state.allocation[dimKey]?.items || state.allocation[dimKey];
 
-    let newVal = parseFloat(e.target.value);
+    let newVal = Math.round(parseFloat(e.target.value));
     if (isNaN(newVal) || newVal < 0) newVal = 0;
     if (newVal > 100) newVal = 100;
-
-    const remainder   = 100 - newVal;
-    const siblings    = items.filter((_, i) => i !== idx);
-    const siblingSum  = siblings.reduce((s, x) => s + x.pct, 0);
-
-    // Update the changed item
     items[idx].pct = newVal;
-    e.target.value = newVal;
 
-    // Redistribute remainder proportionally among siblings
-    if (siblings.length > 0) {
-      if (siblingSum === 0) {
-        const equal = remainder / siblings.length;
-        siblings.forEach(s => s.pct = equal);
-      } else {
-        siblings.forEach(s => { s.pct = (s.pct / siblingSum) * remainder; });
-      }
-      // Round to 1 decimal; assign residual to last sibling
-      let runningSum = newVal;
-      siblings.forEach((s, si) => {
-        if (si < siblings.length - 1) {
-          s.pct = Math.round(s.pct * 10) / 10;
-          runningSum += s.pct;
-        } else {
-          s.pct = Math.round((100 - runningSum) * 10) / 10;
-        }
+    // Update live display without redistribution (free-form; use Normalise to fix total)
+    const valSpan = document.querySelector(`.pct-value[data-dim-key="${dimKey}"][data-idx="${idx}"]`);
+    if (valSpan) valSpan.textContent = newVal + '%';
+    const dollarCell = document.querySelector(`td.td-dollar[data-dim-key="${dimKey}"][data-idx="${idx}"]`);
+    if (dollarCell) dollarCell.textContent = USD.format(state.budget * newVal / 100);
+
+    // Update bar segment width
+    const track = document.querySelector(`.bar-track[data-dim-key="${dimKey}"]`);
+    if (track) {
+      const total = items.reduce((s, x) => s + x.pct, 0) || 1;
+      const segs  = track.querySelectorAll('.bar-seg');
+      items.forEach((item, i) => {
+        const seg = segs[i];
+        if (!seg) return;
+        const w = (item.pct / total) * 100;
+        seg.style.width = w + '%';
+        seg.title = `${item.label}: ${item.pct}% (${USD.format(state.budget * item.pct / 100)})`;
+        seg.innerHTML = w >= 8 ? `<span>${item.pct}%</span>` : '';
       });
     }
+  });
 
-    refreshDimension(dimKey);
+  /* ── Normalise to 100% ──────────────────────────────────────────────────── */
+
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('btn-dim--normalise')) {
+      const dimKey = e.target.dataset.dimKey;
+      const items  = state.allocation[dimKey]?.items || state.allocation[dimKey];
+      const total  = items.reduce((s, x) => s + x.pct, 0);
+      if (total === 0) return;
+      let runningSum = 0;
+      items.forEach((item, i) => {
+        if (i < items.length - 1) {
+          item.pct = Math.round((item.pct / total) * 100);
+          runningSum += item.pct;
+        } else {
+          item.pct = 100 - runningSum;
+        }
+      });
+      refreshDimension(dimKey);
+    }
+
+    // Toggle add-value form
+    if (e.target.classList.contains('btn-dim--add')) {
+      const dimKey  = e.target.dataset.dimKey;
+      const addForm = document.querySelector(`.add-form[data-dim-key="${dimKey}"]`);
+      if (addForm) addForm.classList.toggle('visible');
+    }
+
+    // Confirm add value
+    if (e.target.classList.contains('btn-add-confirm')) {
+      const dimKey  = e.target.dataset.dimKey;
+      const addForm = document.querySelector(`.add-form[data-dim-key="${dimKey}"]`);
+      const label   = addForm.querySelector('.add-label-input').value.trim();
+      const pct     = Math.round(parseFloat(addForm.querySelector('.add-pct-input').value) || 0);
+      if (!label) return;
+      const items   = state.allocation[dimKey]?.items || state.allocation[dimKey];
+      items.push({ label, pct });
+      // Re-render this dimension card
+      const oldCard = document.querySelector(`.dim-card[data-dim-key="${dimKey}"]`);
+      const dimCfg  = DIMENSION_CONFIG.find(d => d.key === dimKey);
+      if (oldCard && dimCfg) {
+        const newCard = renderDimension(dimCfg, items, state.budget);
+        oldCard.replaceWith(newCard);
+      }
+      addForm.classList.remove('visible');
+    }
   });
 
   function refreshDimension(dimKey) {
@@ -1100,12 +1260,15 @@ IMPORTANT: Each dimension's items pct values must sum to exactly 100. Use only l
       });
     }
 
-    // Update input values and dollar cells
+    // Update sliders, value labels, and dollar cells
     items.forEach((item, i) => {
-      const input = document.querySelector(`.pct-input[data-dim-key="${dimKey}"][data-idx="${i}"]`);
-      if (input && document.activeElement !== input) input.value = item.pct;
+      const pct     = Math.round(item.pct);
+      const slider  = document.querySelector(`.pct-slider[data-dim-key="${dimKey}"][data-idx="${i}"]`);
+      if (slider)   slider.value = pct;
+      const valSpan = document.querySelector(`.pct-value[data-dim-key="${dimKey}"][data-idx="${i}"]`);
+      if (valSpan)  valSpan.textContent = pct + '%';
       const dollarCell = document.querySelector(`td.td-dollar[data-dim-key="${dimKey}"][data-idx="${i}"]`);
-      if (dollarCell) dollarCell.textContent = USD.format(budget * item.pct / 100);
+      if (dollarCell) dollarCell.textContent = USD.format(budget * pct / 100);
     });
   }
 
