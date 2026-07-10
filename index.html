@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IBM Marketing Investment Allocator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    /* ── Reset & tokens ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ibm-blue:        #0f62fe;
+      --ibm-blue-hover:  #0353e9;
+      --ibm-blue-light:  #edf4ff;
+      --ibm-purple:      #6929c4;
+      --ibm-purple-light:#f6f2ff;
+      --ibm-red:         #da1e28;     
+      --ibm-red-light:   #fff1f1;
+      --ibm-green:       #198038;
+      --ibm-gray-10:     #f4f4f4;
+      --ibm-gray-20:     #e0e0e0;
+      --ibm-gray-40:     #a8a8a8;
+      --ibm-gray-60:     #6f6f6f;
+      --ibm-gray-80:     #393939;
+      --ibm-gray-90:     #262626;
+      --ibm-gray-100:    #161616;
+      --ibm-white:       #ffffff;
+
+      /* Carbon categorical data palette */
+      --cat-1: #0f62fe;
+      --cat-2: #6929c4;
+      --cat-3: #1192e8;
+      --cat-4: #005d5d;
+      --cat-5: #9f1853;
+      --cat-6: #fa4d56;
+      --cat-7: #570408;
+      --cat-8: #198038;
+      --cat-9: #002d9c;
+      --cat-10:#ee538b;
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      background: var(--ibm-gray-10);
+      color: var(--ibm-gray-100);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────────────── */
+    .ibm-header {
+      background: var(--ibm-blue);
+      color: var(--ibm-white);
+      padding: 0 2rem;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      flex-shrink: 0;
+    }
+    .ibm-header__logo {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--ibm-white);
+    }
+    .ibm-header__divider {
+      width: 1px;
+      height: 20px;
+      background: rgba(255,255,255,0.4);
+    }
+    .ibm-header__title {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 0.16px;
+    }
+
+    /* ── Main layout ─────────────────────────────────────────────────────── */
+    main {
+      flex: 1;
+      max-width: 960px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--ibm-gray-100);
+      margin-bottom: 0.25rem;
+    }
+    .page-subtitle {
+      font-size: 14px;
+      color: var(--ibm-gray-60);
+      margin-bottom: 2rem;
+    }
+
+    /* ── Card ────────────────────────────────────────────────────────────── */
+    .card {
+      background: var(--ibm-white);
+      border: 1px solid var(--ibm-gray-20);
+      margin-bottom: 1.5rem;
+    }
+    .card__header {
+      padding: 1rem 1.5rem 0.75rem;
+      border-bottom: 1px solid var(--ibm-gray-20);
+    }
+    .card__title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ibm-gray-100);
+    }
+    .card__hint {
+      font-size: 12px;
+      color: var(--ibm-gray-60);
+      margin-top: 2px;
+    }
+    .card__body {
+      padding: 1.5rem;
+    }
+
+    /* ── Drop zone ───────────────────────────────────────────────────────── */
+    .drop-zone {
+      border: 1px dashed var(--ibm-gray-40);
+      background: var(--ibm-gray-10);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      position: relative;
+    }
+    .drop-zone:hover,
+    .drop-zone.dragover {
+      border-color: var(--ibm-blue);
+      background: var(--ibm-blue-light);
+    }
+    .drop-zone__icon {
+      display: block;
+      margin: 0 auto 0.75rem;
+      width: 32px;
+      height: 32px;
+      color: var(--ibm-gray-60);
+    }
+    .drop-zone__label {
+      font-size: 14px;
+      color: var(--ibm-gray-60);
+    }
+    .drop-zone__label strong {
+      color: var(--ibm-blue);
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .drop-zone__sub {
+      font-size: 12px;
+      color: var(--ibm-gray-40);
+      margin-top: 4px;
+    }
+    .drop-zone input[type="file"] { display: none; }
+
+    /* ── File selected state ─────────────────────────────────────────────── */
+    .file-info {
+      display: none;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      background: var(--ibm-blue-light);
+      border: 1px solid #b8d4ff;
+    }
+    .file-info.visible { display: flex; }
+    .file-info__icon { color: var(--ibm-blue); flex-shrink: 0; }
+    .file-info__name { font-size: 13px; font-weight: 500; color: var(--ibm-gray-100); }
+    .file-info__meta { font-size: 12px; color: var(--ibm-gray-60); }
+    .file-info__slides {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--ibm-green);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .file-info__remove {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--ibm-gray-60);
+      font-size: 16px;
+      padding: 0 4px;
+      margin-left: 4px;
+    }
+    .file-info__remove:hover { color: var(--ibm-red); }
+
+    /* ── Budget input ────────────────────────────────────────────────────── */
+    .budget-row {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-width: 320px;
+    }
+    .budget-row label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ibm-gray-80);
+      letter-spacing: 0.32px;
+      text-transform: uppercase;
+    }
+    .budget-input-wrap {
+      display: flex;
+      align-items: stretch;
+      border: 1px solid var(--ibm-gray-40);
+      background: var(--ibm-white);
+    }
+    .budget-input-wrap:focus-within {
+      outline: 2px solid var(--ibm-blue);
+      outline-offset: -2px;
+    }
+    .budget-prefix {
+      display: flex;
+      align-items: center;
+      padding: 0 0.75rem;
+      background: var(--ibm-gray-10);
+      border-right: 1px solid var(--ibm-gray-20);
+      font-size: 14px;
+      color: var(--ibm-gray-60);
+      user-select: none;
+    }
+    #budget-input {
+      border: none;
+      outline: none;
+      padding: 0.6rem 0.75rem;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--ibm-gray-100);
+      background: transparent;
+      width: 100%;
+    }
+
+    /* ── Primary button ──────────────────────────────────────────────────── */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--ibm-blue);
+      color: var(--ibm-white);
+      border: none;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      letter-spacing: 0.16px;
+      transition: background 0.15s;
+      margin-top: 1.5rem;
+    }
+    .btn-primary:hover:not(:disabled) { background: var(--ibm-blue-hover); }
+    .btn-primary:disabled {
+      background: var(--ibm-gray-40);
+      cursor: not-allowed;
+    }
+
+    /* ── Secondary button ────────────────────────────────────────────────── */
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--ibm-white);
+      color: var(--ibm-blue);
+      border: 1px solid var(--ibm-blue);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      letter-spacing: 0.16px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-secondary:hover {
+      background: var(--ibm-blue);
+      color: var(--ibm-white);
+    }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      color: var(--ibm-gray-80);
+      border: 1px solid var(--ibm-gray-40);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 400;
+      cursor: pointer;
+      letter-spacing: 0.16px;
+      transition: background 0.15s;
+    }
+    .btn-ghost:hover { background: var(--ibm-gray-10); }
+
+    /* ── Notification / error ────────────────────────────────────────────── */
+    .notification {
+      display: none;
+      padding: 0.875rem 1rem 0.875rem 1.25rem;
+      border-left: 3px solid var(--ibm-red);
+      background: var(--ibm-red-light);
+      font-size: 13px;
+      color: var(--ibm-gray-100);
+      margin-top: 1rem;
+    }
+    .notification.visible { display: block; }
+    .notification strong { color: var(--ibm-red); }
+
+    /* ── Loading state ───────────────────────────────────────────────────── */
+    .loading-bar {
+      display: none;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      font-size: 13px;
+      color: var(--ibm-gray-60);
+    }
+    .loading-bar.visible { display: flex; }
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid var(--ibm-gray-20);
+      border-top-color: var(--ibm-blue);
+      border-radius: 50%;
+      animation: spin 0.65s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Results section ─────────────────────────────────────────────────── */
+    #results-section { display: none; }
+    #results-section.visible { display: block; }
+
+    .results-banner {
+      background: var(--ibm-gray-90);
+      color: var(--ibm-white);
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .results-banner__budget {
+      font-size: 18px;
+      font-weight: 300;
+    }
+    .results-banner__budget strong {
+      font-weight: 600;
+      color: #78a9ff;
+    }
+    .results-banner__sub {
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+      margin-top: 2px;
+    }
+    .results-banner__actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── Rationale panel ─────────────────────────────────────────────────── */
+    .rationale-panel {
+      background: var(--ibm-gray-10);
+      border: 1px solid var(--ibm-gray-20);
+      border-left: 3px solid var(--ibm-blue);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .rationale-panel__title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.32px;
+      text-transform: uppercase;
+      color: var(--ibm-blue);
+      margin-bottom: 0.75rem;
+    }
+    .rationale-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem 1.5rem;
+    }
+    @media (max-width: 680px) {
+      .rationale-grid { grid-template-columns: 1fr; }
+    }
+    .rationale-item__dim {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ibm-gray-80);
+      margin-bottom: 1px;
+    }
+    .rationale-item__text {
+      font-size: 12px;
+      color: var(--ibm-gray-60);
+      line-height: 1.5;
+    }
+
+    /* ── Dimension grid ──────────────────────────────────────────────────── */
+    .dim-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 680px) {
+      .dim-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Dimension card ──────────────────────────────────────────────────── */
+    .dim-card {
+      background: var(--ibm-white);
+      border: 1px solid var(--ibm-gray-20);
+      padding: 1.25rem;
+    }
+    .dim-card__header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.875rem;
+    }
+    .dim-card__title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ibm-gray-100);
+      flex: 1;
+    }
+    .badge {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.32px;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 2px;
+    }
+    .badge--strategic {
+      background: var(--ibm-blue-light);
+      color: var(--ibm-blue);
+    }
+    .badge--funnel {
+      background: var(--ibm-purple-light);
+      color: var(--ibm-purple);
+    }
+
+    /* ── Bar chart ───────────────────────────────────────────────────────── */
+    .bar-track {
+      display: flex;
+      height: 28px;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 2px;
+      margin-bottom: 1rem;
+      gap: 1px;
+      background: var(--ibm-gray-20);
+    }
+    .bar-seg {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      white-space: nowrap;
+      font-size: 11px;
+      font-weight: 500;
+      color: #fff;
+      transition: width 0.35s ease;
+      cursor: default;
+      min-width: 0;
+      flex-shrink: 0;
+    }
+    .bar-seg span {
+      padding: 0 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    @keyframes barIn {
+      from { width: 0 !important; }
+    }
+    .bar-seg.animate { animation: barIn 0.5s ease forwards; }
+
+    /* ── Legend table ────────────────────────────────────────────────────── */
+    .legend-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .legend-table td {
+      padding: 4px 6px;
+      vertical-align: middle;
+    }
+    .legend-table tr:hover td { background: var(--ibm-gray-10); }
+    .swatch {
+      width: 10px; height: 10px;
+      border-radius: 1px;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .td-swatch { width: 22px; }
+    .td-label { color: var(--ibm-gray-80); }
+    .td-pct {
+      text-align: right;
+      color: var(--ibm-gray-60);
+      white-space: nowrap;
+      width: 56px;
+    }
+    .td-dollar {
+      text-align: right;
+      font-weight: 500;
+      color: var(--ibm-gray-100);
+      white-space: nowrap;
+      width: 90px;
+    }
+    .pct-input {
+      width: 52px;
+      text-align: right;
+      border: 1px solid var(--ibm-gray-20);
+      padding: 2px 4px;
+      font-family: inherit;
+      font-size: 12px;
+      color: var(--ibm-gray-100);
+      background: var(--ibm-white);
+    }
+    .pct-input:focus {
+      outline: 2px solid var(--ibm-blue);
+      outline-offset: -1px;
+      border-color: transparent;
+    }
+
+    /* ── Footer ──────────────────────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      font-size: 11px;
+      color: var(--ibm-gray-40);
+      border-top: 1px solid var(--ibm-gray-20);
+      padding: 1rem;
+      background: var(--ibm-white);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── IBM Header ─────────────────────────────────────────────────────────── -->
+<header class="ibm-header">
+  <span class="ibm-header__logo">IBM</span>
+  <div class="ibm-header__divider"></div>
+  <span class="ibm-header__title">Marketing Investment Allocator</span>
+</header>
+
+<!-- ── Main ───────────────────────────────────────────────────────────────── -->
+<main>
+  <h1 class="page-title">Event Spend Allocation</h1>
+  <p class="page-subtitle">Upload a Plan of Record to infer how the investment maps across IBM's 7 marketing taxonomy dimensions.</p>
+
+  <!-- Upload card -->
+  <div class="card" id="upload-card">
+    <div class="card__header">
+      <div class="card__title">Plan of Record</div>
+      <div class="card__hint">Upload the event PoR (.pptx). Text is extracted client-side — no file is sent to any server.</div>
+    </div>
+    <div class="card__body">
+
+      <!-- Drop zone -->
+      <div class="drop-zone" id="drop-zone">
+        <svg class="drop-zone__icon" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+          <path d="M26 15h-9V6h-2v9H6v2h9v9h2v-9h9z"/>
+          <path d="M28 4H4a2 2 0 00-2 2v20a2 2 0 002 2h24a2 2 0 002-2V6a2 2 0 00-2-2zm0 22H4V6h24z"/>
+        </svg>
+        <div class="drop-zone__label">Drag &amp; drop your .pptx file here, or <strong id="browse-link">browse to upload</strong></div>
+        <div class="drop-zone__sub">PowerPoint (.pptx) files only</div>
+        <input type="file" id="file-input" accept=".pptx" />
+      </div>
+
+      <!-- File info -->
+      <div class="file-info" id="file-info">
+        <svg class="file-info__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+          <path d="M25.7 9.3l-7-7A1 1 0 0018 2H8a2 2 0 00-2 2v24a2 2 0 002 2h16a2 2 0 002-2V10a1 1 0 00-.3-.7zM18 4.4l5.6 5.6H18zM24 28H8V4h8v8h8z"/>
+        </svg>
+        <div>
+          <div class="file-info__name" id="file-name">—</div>
+          <div class="file-info__meta" id="file-meta"></div>
+        </div>
+        <div class="file-info__slides" id="slide-count"></div>
+        <button class="file-info__remove" id="remove-file" title="Remove file">✕</button>
+      </div>
+
+      <!-- Budget -->
+      <div class="budget-row">
+        <label for="budget-input">Total Event Budget (USD)</label>
+        <div class="budget-input-wrap">
+          <span class="budget-prefix">$</span>
+          <input type="text" id="budget-input" placeholder="0" inputmode="numeric" autocomplete="off" />
+        </div>
+      </div>
+
+      <!-- Action -->
+      <button class="btn-primary" id="analyse-btn" disabled>
+        <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+          <path d="M16 2a14 14 0 100 28A14 14 0 0016 2zm0 26A12 12 0 114 16 12 12 0 0116 28zm0-20a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z"/>
+        </svg>
+        Analyse &amp; Allocate
+      </button>
+
+      <!-- Loading -->
+      <div class="loading-bar" id="loading-bar">
+        <div class="spinner"></div>
+        <span>Analysing your event plan across 7 IBM taxonomy dimensions…</span>
+      </div>
+
+      <!-- Error notification -->
+      <div class="notification" id="error-box"></div>
+
+    </div>
+  </div>
+
+  <!-- Results section -->
+  <div id="results-section">
+
+    <!-- Summary banner + actions -->
+    <div class="results-banner">
+      <div>
+        <div class="results-banner__budget" id="budget-summary">Total Budget: <strong>—</strong></div>
+        <div class="results-banner__sub">Analysed across 7 IBM marketing taxonomy dimensions</div>
+      </div>
+      <div class="results-banner__actions">
+        <button class="btn-secondary" id="export-btn">
+          <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+            <path d="M26 24v4H6v-4H4v4a2 2 0 002 2h20a2 2 0 002-2v-4zM26 14l-1.41-1.41L17 20.17V2h-2v18.17l-7.59-7.58L6 14l10 10 10-10z"/>
+          </svg>
+          Export CSV
+        </button>
+        <button class="btn-ghost" id="reset-btn">
+          Start Over
+        </button>
+      </div>
+    </div>
+
+    <!-- Rationale panel -->
+    <div class="rationale-panel" id="rationale-panel" style="display:none">
+      <div class="rationale-panel__title">AI Rationale</div>
+      <div class="rationale-grid" id="rationale-grid"></div>
+    </div>
+
+    <!-- Dimension panels grid -->
+    <div class="dim-grid" id="dim-grid"></div>
+
+  </div>
+</main>
+
+<footer>Made with IBM Bob</footer>
+
+<script>
+  /* ── Constants ─────────────────────────────────────────────────────────── */
+
+  const WX_API_KEY  = 'ilEQFwmwKWTdGk-Nh0Im70IgrAYY579KJl0mWqQr0JBf';
+  const WX_SPACE_ID = '9d99054b-00ab-4166-a499-48c3442bcc62';
+  const WX_URL      = 'https://us-south.ml.cloud.ibm.com';
+  const WX_MODEL    = 'meta-llama/llama-3-3-70b-instruct';
+
+  const CAT_COLOURS = [
+    '#0f62fe','#6929c4','#1192e8','#005d5d',
+    '#9f1853','#fa4d56','#570408','#198038',
+    '#002d9c','#ee538b'
+  ];
+
+  const DIMENSION_CONFIG = [
+    { key: 'offering_product', label: 'Offering / Product',                    badge: 'strategic' },
+    { key: 'market_geography', label: 'Market / Geography',                    badge: 'strategic' },
+    { key: 'customer_segment', label: 'Customer Segment',                      badge: 'strategic' },
+    { key: 'activity_type',    label: 'Activity Type / Communication Category',badge: 'strategic' },
+    { key: 'industry',         label: 'Industry',                              badge: 'strategic' },
+    { key: 'persona',          label: 'Persona',                               badge: 'strategic' },
+    { key: 'funnel_stage',     label: 'Funnel Stage',                          badge: 'funnel'    },
+  ];
+
+  const SYSTEM_PROMPT = `You are an IBM marketing taxonomy expert. Analyse the provided corporate event Plan of Record (PoR) and allocate 100% of the event investment across each of IBM's 7 marketing taxonomy dimensions.
+
+For each dimension, select ONLY the elements that are genuinely relevant to this event (2–7 elements per dimension). Assign integer percentages that sum to exactly 100 for each dimension. Add a concise rationale (1–2 sentences max) explaining why you allocated the spend that way for that dimension.
+
+Return ONLY a raw JSON object — no markdown, no prose, no code fences. The JSON must have exactly these 7 keys:
+
+{
+  "offering_product":  {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]},
+  "market_geography":  {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]},
+  "customer_segment":  {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]},
+  "activity_type":     {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]},
+  "industry":          {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]},
+  "persona":           {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]},
+  "funnel_stage":      {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]}
+}
+
+## Canonical element lists — use ONLY labels from these lists (verbatim):
+
+### offering_product — IBM portfolio areas (UT15/17 level):
+watsonx (AI & Data Platform), IBM Consulting, Hybrid Cloud & Infrastructure, IBM z (Mainframe / Z Systems), IBM Power, IBM Storage, Security (QRadar / Guardium / Verify), Automation (IBM Business Automation / Instana), Sustainability Software
+
+### market_geography — IBM ERDM geographies:
+Americas, North America, Latin America, EMEA, Europe, Middle East & Africa, Asia Pacific, Japan, China, Global (cross-geo)
+
+### customer_segment — IBM ERDM Technology segments:
+Enterprise (>$1B revenue), Upper Mid-Market ($500M–$1B), Mid-Market ($100M–$500M), Small & Medium Business (<$100M), Public Sector / Government, Strategic Accounts (named accounts / ABM), Global System Integrators (GSIs), Independent Software Vendors (ISVs)
+
+### activity_type — IBM ERDM activity taxonomy:
+Field Event (owned), Third-Party Event / Sponsorship, Webinar / Virtual Event, Executive Engagement, Digital Advertising, Content Syndication, Social Media, Email / Nurture, Thought Leadership / PR, Partner Co-Marketing, Sales Enablement
+
+### industry — IBM standard industry verticals:
+Cross-Industry, Banking & Financial Markets, Insurance, Healthcare & Life Sciences, Telecommunications, Retail & Consumer Products, Government & Public Sector, Energy & Utilities, Manufacturing, Transportation & Logistics, Media & Entertainment, Education
+
+### persona — IBM ERDM buyer personas:
+Chief Executive Officer (CEO), Chief Information Officer (CIO), Chief Technology Officer (CTO), Chief Data & AI Officer (CDAO), Chief Financial Officer (CFO), Chief Marketing Officer (CMO), Chief Security Officer / CISO, IT Architect / Technical Decision Maker, Developer / Engineer, Line of Business Executive, Procurement / Sourcing
+
+### funnel_stage — IBM funnel framework (fixed 5 stages):
+Brand Awareness, Consideration, Demand Generation, Engaged to Qualified, Qualified to Win
+
+IMPORTANT: Each dimension's items pct values must sum to exactly 100. Use only labels from the canonical lists above. Keep each rationale to 1–2 sentences.`;
+
+  const USD = new Intl.NumberFormat('en-US', {
+    style: 'currency', currency: 'USD', maximumFractionDigits: 0
+  });
+
+  /* ── App state ──────────────────────────────────────────────────────────── */
+
+  const state = {
+    slideText:  '',
+    budget:     0,
+    allocation: null,
+    fileName:   '',
+    slideCount: 0,
+  };
+
+  /* ── DOM refs ───────────────────────────────────────────────────────────── */
+
+  const dropZone      = document.getElementById('drop-zone');
+  const fileInput     = document.getElementById('file-input');
+  const browseLink    = document.getElementById('browse-link');
+  const fileInfo      = document.getElementById('file-info');
+  const fileNameEl    = document.getElementById('file-name');
+  const fileMetaEl    = document.getElementById('file-meta');
+  const slideCountEl  = document.getElementById('slide-count');
+  const removeFileBtn = document.getElementById('remove-file');
+  const budgetInput    = document.getElementById('budget-input');
+  const rationalePanel = document.getElementById('rationale-panel');
+  const rationaleGrid  = document.getElementById('rationale-grid');
+  const analyseBtn    = document.getElementById('analyse-btn');
+  const loadingBar    = document.getElementById('loading-bar');
+  const errorBox      = document.getElementById('error-box');
+  const resultsSection= document.getElementById('results-section');
+  const budgetSummary = document.getElementById('budget-summary');
+  const dimGrid       = document.getElementById('dim-grid');
+  const exportBtn     = document.getElementById('export-btn');
+  const resetBtn      = document.getElementById('reset-btn');
+
+  /* ── File handling ──────────────────────────────────────────────────────── */
+
+  browseLink.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('click', e => {
+    if (e.target === browseLink) return;
+    fileInput.click();
+  });
+
+  dropZone.addEventListener('dragover', e => {
+    e.preventDefault();
+    dropZone.classList.add('dragover');
+  });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    const f = e.dataTransfer.files[0];
+    if (f) handleFile(f);
+  });
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files[0]) handleFile(fileInput.files[0]);
+    fileInput.value = '';
+  });
+
+  removeFileBtn.addEventListener('click', () => clearFile());
+
+  async function handleFile(file) {
+    clearError();
+    if (!file.name.toLowerCase().endsWith('.pptx')) {
+      showError('Only .pptx files are accepted. Please upload a PowerPoint file.');
+      return;
+    }
+
+    state.fileName = file.name;
+    fileNameEl.textContent = file.name;
+    fileMetaEl.textContent = formatBytes(file.size);
+    slideCountEl.textContent = 'Extracting slides…';
+    fileInfo.classList.add('visible');
+
+    try {
+      const buf    = await file.arrayBuffer();
+      const zip    = await JSZip.loadAsync(buf);
+      const slides = Object.keys(zip.files)
+        .filter(n => /^ppt\/slides\/slide\d+\.xml$/i.test(n))
+        .sort((a, b) => {
+          const na = parseInt(a.match(/\d+/)[0], 10);
+          const nb = parseInt(b.match(/\d+/)[0], 10);
+          return na - nb;
+        });
+
+      if (slides.length === 0) {
+        showError('No slide content found in this .pptx file. Please check the file and try again.');
+        clearFile();
+        return;
+      }
+
+      const parts = await Promise.all(
+        slides.map(name => zip.files[name].async('string')
+          .then(xml => xml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()))
+      );
+
+      state.slideText  = parts.join('\n\n--- SLIDE BREAK ---\n\n');
+      state.slideCount = slides.length;
+      slideCountEl.textContent = `✓ ${slides.length} slide${slides.length !== 1 ? 's' : ''} extracted`;
+      console.log('[PPTX] Extracted text:\n', state.slideText);
+    } catch (err) {
+      showError('Failed to read the .pptx file. Ensure it is a valid PowerPoint file.');
+      clearFile();
+      return;
+    }
+
+    updateAnalyseBtn();
+  }
+
+  function clearFile() {
+    state.slideText  = '';
+    state.fileName   = '';
+    state.slideCount = 0;
+    fileInfo.classList.remove('visible');
+    fileNameEl.textContent = '—';
+    fileMetaEl.textContent = '';
+    slideCountEl.textContent = '';
+    updateAnalyseBtn();
+  }
+
+  /* ── Budget input ───────────────────────────────────────────────────────── */
+
+  budgetInput.addEventListener('input', () => {
+    const raw = budgetInput.value.replace(/[^0-9]/g, '');
+    state.budget = parseInt(raw, 10) || 0;
+    updateAnalyseBtn();
+  });
+
+  budgetInput.addEventListener('blur', () => {
+    if (state.budget > 0) {
+      budgetInput.value = state.budget.toLocaleString('en-US');
+    }
+  });
+
+  budgetInput.addEventListener('focus', () => {
+    budgetInput.value = state.budget > 0 ? String(state.budget) : '';
+  });
+
+  /* ── Enable/disable analyse button ─────────────────────────────────────── */
+
+  function updateAnalyseBtn() {
+    analyseBtn.disabled = !(state.slideText && state.budget > 0);
+  }
+
+  /* ── Analyse button ─────────────────────────────────────────────────────── */
+
+  analyseBtn.addEventListener('click', async () => {
+    clearError();
+    setLoading(true);
+    resultsSection.classList.remove('visible');
+
+    try {
+      const allocation = await callWatsonx(state.slideText, state.budget);
+      state.allocation = allocation;
+      renderAllDimensions(allocation, state.budget);
+      resultsSection.classList.add('visible');
+      resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      showError(err.message || 'An unexpected error occurred. Check the browser console for details.');
+    } finally {
+      setLoading(false);
+    }
+  });
+
+  /* ── watsonx.ai API ─────────────────────────────────────────────────────── */
+
+  async function getIamToken() {
+    let res;
+    try {
+      res = await fetch('https://iam.cloud.ibm.com/identity/token', {
+        method: 'POST',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        body: `grant_type=urn%3Aibm%3Aparams%3Aoauth%3Agrant-type%3Aapikey&apikey=${encodeURIComponent(WX_API_KEY)}`,
+      });
+    } catch (_) {
+      throw new Error('Network error — could not reach IBM IAM. Check your internet connection.');
+    }
+    if (!res.ok) {
+      if (res.status === 400 || res.status === 401) {
+        throw new Error('Invalid IBM Cloud API key. Update WX_API_KEY in the HTML file.');
+      }
+      throw new Error(`IBM IAM error (HTTP ${res.status}). Check your API key.`);
+    }
+    const data = await res.json();
+    return data.access_token;
+  }
+
+  async function callWatsonx(slideText, budget) {
+    const token     = await getIamToken();
+    const truncated = slideText.slice(0, 8000);
+    const prompt    = `${SYSTEM_PROMPT}\n\nEvent Plan of Record (extracted from .pptx):\n\n${truncated}\n\nTotal event budget: ${USD.format(budget)}\n\nReturn the JSON allocation now:`;
+
+    let res;
+    try {
+      res = await fetch(`${WX_URL}/ml/v1/text/generation?version=2023-05-29`, {
+        method: 'POST',
+        headers: {
+          'content-type':  'application/json',
+          'authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          model_id: WX_MODEL,
+          space_id: WX_SPACE_ID,
+          input:    prompt,
+          parameters: {
+            max_new_tokens:     1500,
+            temperature:        0.1,
+            repetition_penalty: 1.05,
+          },
+        }),
+      });
+    } catch (_) {
+      throw new Error('Network error — could not reach IBM watsonx.ai. Check your internet connection.');
+    }
+
+    if (!res.ok) {
+      let rawErr = '';
+      try { rawErr = await res.text(); } catch (_) {}
+      console.error('[watsonx] HTTP', res.status, rawErr);
+      let detail = '';
+      try { detail = JSON.parse(rawErr).errors?.[0]?.message || ''; } catch (_) {}
+      if (res.status === 401 || res.status === 403) {
+        throw new Error(`watsonx.ai authorisation failed (HTTP ${res.status}). Detail: ${rawErr || 'none'}. Check WX_API_KEY and WX_SPACE_ID.`);
+      }
+      throw new Error(`watsonx.ai error (HTTP ${res.status})${detail ? ': ' + detail : ': ' + rawErr}.`);
+    }
+
+    let body;
+    try { body = await res.json(); } catch (_) {
+      throw new Error('Received an unreadable response from watsonx.ai.');
+    }
+
+    const raw = body?.results?.[0]?.generated_text ?? '';
+    let allocation;
+    try {
+      const cleaned = raw.replace(/^```[a-z]*\n?/i, '').replace(/\n?```$/, '').trim();
+      // Extract the first { ... } block in case the model added any surrounding text
+      const match = cleaned.match(/\{[\s\S]*\}/);
+      if (!match) throw new Error('no JSON object found');
+      allocation = JSON.parse(match[0]);
+    } catch (_) {
+      console.error('[watsonx] Raw response:\n', raw);
+      throw new Error('watsonx returned an invalid JSON response. See the browser console for details.');
+    }
+
+    validateAllocation(allocation);
+    return allocation;
+  }
+
+  function validateAllocation(a) {
+    for (const dim of DIMENSION_CONFIG) {
+      const val = a[dim.key];
+      // Support both new {rationale, items} schema and legacy flat array
+      const items = Array.isArray(val) ? val : val?.items;
+      if (!Array.isArray(items) || items.length === 0) {
+        throw new Error(`Missing or empty dimension in AI response: "${dim.key}".`);
+      }
+      const sum = items.reduce((s, x) => s + (Number(x.pct) || 0), 0);
+      if (Math.abs(sum - 100) > 1.5) {
+        throw new Error(`Dimension "${dim.label}" percentages sum to ${sum.toFixed(1)}, expected 100.`);
+      }
+      // Normalise to always have {rationale, items} shape
+      if (Array.isArray(val)) {
+        a[dim.key] = { rationale: '', items: val };
+      }
+    }
+  }
+
+  /* ── Render all dimensions ──────────────────────────────────────────────── */
+
+  function renderAllDimensions(allocation, budget) {
+    budgetSummary.innerHTML = `Total Budget: <strong>${USD.format(budget)}</strong>`;
+
+    // Rationale panel
+    rationaleGrid.innerHTML = '';
+    for (const dimCfg of DIMENSION_CONFIG) {
+      const rationale = allocation[dimCfg.key]?.rationale || '';
+      if (!rationale) continue;
+      const cell = document.createElement('div');
+      cell.innerHTML = `<div class="rationale-item__dim">${escHtml(dimCfg.label)}</div>
+        <div class="rationale-item__text">${escHtml(rationale)}</div>`;
+      rationaleGrid.appendChild(cell);
+    }
+    rationalePanel.style.display = rationaleGrid.children.length ? '' : 'none';
+
+    // Dimension cards
+    dimGrid.innerHTML = '';
+    for (const dimCfg of DIMENSION_CONFIG) {
+      const items = allocation[dimCfg.key]?.items || allocation[dimCfg.key];
+      dimGrid.appendChild(renderDimension(dimCfg, items, budget));
+    }
+  }
+
+  function renderDimension(dimCfg, items, budget) {
+    const card = document.createElement('div');
+    card.className = 'dim-card';
+    card.dataset.dimKey = dimCfg.key;
+
+    // Header
+    const hdr = document.createElement('div');
+    hdr.className = 'dim-card__header';
+    hdr.innerHTML = `<span class="dim-card__title">${dimCfg.label}</span>
+      <span class="badge badge--${dimCfg.badge}">${dimCfg.badge === 'funnel' ? 'Funnel' : 'Strategic'}</span>`;
+    card.appendChild(hdr);
+
+    // Bar track
+    const track = document.createElement('div');
+    track.className = 'bar-track';
+    track.dataset.dimKey = dimCfg.key;
+    items.forEach((item, i) => {
+      const seg = document.createElement('div');
+      seg.className = 'bar-seg animate';
+      seg.style.width = item.pct + '%';
+      seg.style.background = CAT_COLOURS[i % CAT_COLOURS.length];
+      seg.title = `${item.label}: ${item.pct}% (${USD.format(budget * item.pct / 100)})`;
+      seg.dataset.idx = i;
+      if (item.pct >= 8) {
+        seg.innerHTML = `<span>${item.pct}%</span>`;
+      }
+      track.appendChild(seg);
+    });
+    card.appendChild(track);
+
+    // Legend table
+    const tbl = document.createElement('table');
+    tbl.className = 'legend-table';
+    items.forEach((item, i) => {
+      const colour  = CAT_COLOURS[i % CAT_COLOURS.length];
+      const dollars = budget * item.pct / 100;
+      const tr = document.createElement('tr');
+      tr.dataset.dimKey = dimCfg.key;
+      tr.dataset.idx    = i;
+      tr.innerHTML = `
+        <td class="td-swatch"><span class="swatch" style="background:${colour}"></span></td>
+        <td class="td-label">${escHtml(item.label)}</td>
+        <td class="td-pct">
+          <input type="number" class="pct-input"
+            min="0" max="100" step="0.1"
+            value="${item.pct}"
+            data-dim-key="${dimCfg.key}"
+            data-idx="${i}"
+            aria-label="${escHtml(item.label)} percentage" />
+        </td>
+        <td class="td-dollar" data-dim-key="${dimCfg.key}" data-idx="${i}">${USD.format(dollars)}</td>`;
+      tbl.appendChild(tr);
+    });
+    card.appendChild(tbl);
+
+    return card;
+  }
+
+  /* ── Manual adjustment ──────────────────────────────────────────────────── */
+
+  document.addEventListener('change', e => {
+    if (!e.target.classList.contains('pct-input')) return;
+    const dimKey = e.target.dataset.dimKey;
+    const idx    = parseInt(e.target.dataset.idx, 10);
+    const items  = state.allocation[dimKey]?.items || state.allocation[dimKey];
+
+    let newVal = parseFloat(e.target.value);
+    if (isNaN(newVal) || newVal < 0) newVal = 0;
+    if (newVal > 100) newVal = 100;
+
+    const remainder   = 100 - newVal;
+    const siblings    = items.filter((_, i) => i !== idx);
+    const siblingSum  = siblings.reduce((s, x) => s + x.pct, 0);
+
+    // Update the changed item
+    items[idx].pct = newVal;
+    e.target.value = newVal;
+
+    // Redistribute remainder proportionally among siblings
+    if (siblings.length > 0) {
+      if (siblingSum === 0) {
+        const equal = remainder / siblings.length;
+        siblings.forEach(s => s.pct = equal);
+      } else {
+        siblings.forEach(s => { s.pct = (s.pct / siblingSum) * remainder; });
+      }
+      // Round to 1 decimal; assign residual to last sibling
+      let runningSum = newVal;
+      siblings.forEach((s, si) => {
+        if (si < siblings.length - 1) {
+          s.pct = Math.round(s.pct * 10) / 10;
+          runningSum += s.pct;
+        } else {
+          s.pct = Math.round((100 - runningSum) * 10) / 10;
+        }
+      });
+    }
+
+    refreshDimension(dimKey);
+  });
+
+  function refreshDimension(dimKey) {
+    const items  = state.allocation[dimKey]?.items || state.allocation[dimKey];
+    const budget = state.budget;
+
+    // Update bar segments
+    const track = document.querySelector(`.bar-track[data-dim-key="${dimKey}"]`);
+    if (track) {
+      const segs = track.querySelectorAll('.bar-seg');
+      items.forEach((item, i) => {
+        const seg = segs[i];
+        if (!seg) return;
+        seg.style.width = item.pct + '%';
+        seg.title = `${item.label}: ${item.pct}% (${USD.format(budget * item.pct / 100)})`;
+        if (item.pct >= 8) {
+          seg.innerHTML = `<span>${item.pct}%</span>`;
+        } else {
+          seg.innerHTML = '';
+        }
+      });
+    }
+
+    // Update input values and dollar cells
+    items.forEach((item, i) => {
+      const input = document.querySelector(`.pct-input[data-dim-key="${dimKey}"][data-idx="${i}"]`);
+      if (input && document.activeElement !== input) input.value = item.pct;
+      const dollarCell = document.querySelector(`td.td-dollar[data-dim-key="${dimKey}"][data-idx="${i}"]`);
+      if (dollarCell) dollarCell.textContent = USD.format(budget * item.pct / 100);
+    });
+  }
+
+  /* ── Export CSV ─────────────────────────────────────────────────────────── */
+
+  exportBtn.addEventListener('click', () => {
+    if (!state.allocation) return;
+    const rows = ['Dimension,Element,Percentage,Dollar Amount'];
+    for (const dim of DIMENSION_CONFIG) {
+      const items = state.allocation[dim.key]?.items || state.allocation[dim.key];
+      for (const item of items) {
+        const dollars = (state.budget * item.pct / 100).toFixed(2);
+        rows.push([
+          csvEsc(dim.label),
+          csvEsc(item.label),
+          item.pct,
+          dollars,
+        ].join(','));
+      }
+    }
+    const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = 'event-spend-allocation.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  /* ── Reset ──────────────────────────────────────────────────────────────── */
+
+  resetBtn.addEventListener('click', () => {
+    state.slideText  = '';
+    state.budget     = 0;
+    state.allocation = null;
+    state.fileName   = '';
+    state.slideCount = 0;
+
+    clearFile();
+    clearError();
+    budgetInput.value = '';
+    resultsSection.classList.remove('visible');
+    dimGrid.innerHTML = '';
+    updateAnalyseBtn();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* ── Helpers ────────────────────────────────────────────────────────────── */
+
+  function setLoading(on) {
+    analyseBtn.disabled = on;
+    loadingBar.classList.toggle('visible', on);
+  }
+
+  function showError(msg) {
+    errorBox.innerHTML = `<strong>Error:</strong> ${escHtml(msg)}`;
+    errorBox.classList.add('visible');
+  }
+
+  function clearError() {
+    errorBox.textContent = '';
+    errorBox.classList.remove('visible');
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;');
+  }
+
+  function csvEsc(str) {
+    const s = String(str);
+    return s.includes(',') || s.includes('"') || s.includes('\n')
+      ? '"' + s.replace(/"/g, '""') + '"'
+      : s;
+  }
+
+  function formatBytes(bytes) {
+    if (bytes < 1024)       return bytes + ' B';
+    if (bytes < 1048576)    return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1048576).toFixed(1) + ' MB';
+  }
+</script>
+
+</body>
+</html>
