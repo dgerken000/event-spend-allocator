@@ -437,7 +437,7 @@
         </button>
         <div class="loading-bar" id="loading-bar-2">
           <div class="spinner"></div>
-          <span>Computing pivot tables &amp; calling AI for Industry + Funnel Stage…</span>
+          <span>Computing pivot tables across 7 dimensions…</span>
         </div>
         <div class="notification" id="error-box-2"></div>
       </div>
@@ -1187,90 +1187,61 @@ function updatePostmortemBtn() {
  * STEP 2 — GENERATE POST-MORTEM
  * ════════════════════════════════════════════════════════════════════════════ */
 
-postmortemBtn.addEventListener('click', async () => {
+postmortemBtn.addEventListener('click', () => {
   clearError2();
   setLoading2(true);
   pmSection.classList.remove('visible');
 
-  const pivots     = state.excelPivots;
+  const pivots      = state.excelPivots;
   const intentAlloc = state.allocation;
 
-  // Build the 5 pivot-computed dimensions straight from data
-  const offeringItems = buildPivotDim(pivots.offering,  'offering_product');
-  const geoItems      = buildPivotDim(pivots.geo,       'market_geography');
-  const segmentItems  = buildPivotDim(pivots.segment,   'customer_segment');
-  const personaItems  = buildPivotDim(pivots.persona,   'persona');
-  const divisionItems = buildPivotDim(pivots.division,  'ibm_division');
+  // ── All 7 dimensions computed client-side — no AI call needed ────────────
+  // 5 dimensions: exact pivot tables from Excel data
+  const offeringItems = buildPivotDim(pivots.offering, 'offering_product');
+  const geoItems      = buildPivotDim(pivots.geo,      'market_geography');
+  const segmentItems  = buildPivotDim(pivots.segment,  'customer_segment');
+  const personaItems  = buildPivotDim(pivots.persona,  'persona');
+  const divisionItems = buildPivotDim(pivots.division, 'ibm_division');
 
-  // Prompt AI only for Industry + Funnel Stage (not in Excel data).
-  // Keep prompt TINY to avoid watsonx context deadline — no Excel data needed here.
-  const intentIndustry = (intentAlloc['industry']?.items || []).map(it => `${it.label}=${Math.round(it.pct)}%`).join('; ');
-  const intentFunnel   = (intentAlloc['funnel_stage']?.items || []).map(it => `${it.label}=${Math.round(it.pct)}%`).join('; ');
-  // Extract event name from first 200 chars of slide text only
-  const eventHint      = state.slideText.slice(0, 200).replace(/\s+/g,' ').trim();
-
-  const prompt = `IBM marketing analyst. Return ONLY valid raw JSON, no markdown, no prose.
-
-Event: ${eventHint}
-Total pipeline uplift: ${USD.format(pivots.grandTotal)}
-
-For each dimension below, redistribute the uplift % across the same labels. Adjust based on typical IBM event outcomes. uplift_pct values must sum to 100 per dimension. multiple = uplift_pct / intent_pct rounded to 1 decimal.
-
-industry intent allocation: ${intentIndustry}
-funnel_stage intent allocation: ${intentFunnel}
-
-Return ONLY this JSON (no other text):
-{"meta":{"event_name":"<extract from Event above>","pipeline_uplift":${pivots.grandTotal},"opps_influenced":0},"industry":{"items":[{"label":"<exact label>","intent_pct":<N>,"uplift_pct":<N>,"multiple":<N>}]},"funnel_stage":{"items":[{"label":"<exact label>","intent_pct":<N>,"uplift_pct":<N>,"multiple":<N>}]}}`;
-
-  try {
-    const res = await fetch(WORKER_URL, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ prompt }),
-    });
-    if (!res.ok) {
-      const d = await res.json().catch(() => ({}));
-      throw new Error(d.error || `Server error (HTTP ${res.status})`);
-    }
-    const body = await res.json();
-    const raw  = body?.generated_text ?? '';
-    let aiResult;
-    try {
-      const cleaned = raw.replace(/^\s*```[a-z]*\s*/i,'').replace(/\s*```\s*$/,'').trim();
-      const match   = cleaned.match(/\{[\s\S]*\}/);
-      if (!match) throw new Error('no JSON found');
-      aiResult = JSON.parse(match[0]);
-    } catch (_) {
-      console.error('[postmortem-ai] raw:', raw);
-      // Graceful fallback: echo intent as uplift
-      aiResult = {
-        meta: { event_name: 'Event Post-Mortem', pipeline_uplift: pivots.grandTotal, opps_influenced: 0 },
-        industry:     { items: (intentAlloc['industry']?.items||[]).map(it=>({ label:it.label, intent_pct:Math.round(it.pct), uplift_pct:Math.round(it.pct), multiple:1.0 })) },
-        funnel_stage: { items: (intentAlloc['funnel_stage']?.items||[]).map(it=>({ label:it.label, intent_pct:Math.round(it.pct), uplift_pct:Math.round(it.pct), multiple:1.0 })) },
-      };
-    }
-
-    const pm = {
-      meta:             aiResult.meta || { event_name: 'Event Post-Mortem', pipeline_uplift: pivots.grandTotal, opps_influenced: 0 },
-      offering_product: { items: offeringItems,  source: 'pivot' },
-      market_geography: { items: geoItems,        source: 'pivot' },
-      customer_segment: { items: segmentItems,    source: 'pivot' },
-      industry:         { ...aiResult.industry,   source: 'ai'    },
-      persona:          { items: personaItems,    source: 'pivot' },
-      funnel_stage:     { ...aiResult.funnel_stage, source: 'ai'  },
-      ibm_division:     { items: divisionItems,   source: 'pivot' },
-    };
-    pm.meta.pipeline_uplift = pivots.grandTotal;
-
-    state.postmortem = pm;
-    renderPostmortem(pm, pivots.grandTotal, pm.meta.opps_influenced || 0);
-    pmSection.classList.add('visible');
-    pmSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  } catch (err) {
-    showError2(err.message || 'Unexpected error.');
-  } finally {
-    setLoading2(false);
+  // 2 dimensions: Industry + Funnel Stage have no Excel column →
+  // use the intent allocation as the uplift baseline (multiple = 1.0)
+  // This is the most honest representation: we intended this split and
+  // have no measured data to contradict it.
+  function intentAsUplift(dimKey) {
+    return (intentAlloc[dimKey]?.items || []).map(it => ({
+      label:       it.label,
+      intent_pct:  Math.round(it.pct),
+      uplift_pct:  Math.round(it.pct),
+      multiple:    1.0,
+    }));
   }
+
+  // Extract event name: first non-whitespace line of slide text
+  const eventName = state.slideText
+    .split(/\n+/).map(l => l.trim()).find(l => l.length > 3 && l.length < 80)
+    || state.fileName.replace(/\.pptx$/i, '')
+    || 'Event Post-Mortem';
+
+  const pm = {
+    meta: {
+      event_name:       eventName,
+      pipeline_uplift:  pivots.grandTotal,
+      opps_influenced:  0,
+    },
+    offering_product: { items: offeringItems,          source: 'pivot'  },
+    market_geography: { items: geoItems,               source: 'pivot'  },
+    customer_segment: { items: segmentItems,           source: 'pivot'  },
+    industry:         { items: intentAsUplift('industry'),     source: 'intent' },
+    persona:          { items: personaItems,           source: 'pivot'  },
+    funnel_stage:     { items: intentAsUplift('funnel_stage'), source: 'intent' },
+    ibm_division:     { items: divisionItems,          source: 'pivot'  },
+  };
+
+  state.postmortem = pm;
+  renderPostmortem(pm, pivots.grandTotal, 0);
+  pmSection.classList.add('visible');
+  pmSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setLoading2(false);
 });
 
 /* ════════════════════════════════════════════════════════════════════════════
@@ -1349,8 +1320,8 @@ function renderPostmortem(pm, pipeline, opps) {
       </div>`;
     }).join('');
 
-    const sourceTag = source === 'ai'
-      ? `<span class="ai-tag">AI inferred</span>`
+    const sourceTag = source === 'intent'
+      ? `<span class="ai-tag">Intent baseline</span>`
       : `<span>Pivot</span>`;
 
     html += `
@@ -1374,7 +1345,7 @@ function renderPostmortem(pm, pipeline, opps) {
   html += `</div>
     <div class="pivot-note">
       5 of 7 dimensions computed from exact Excel pivot tables <span>● Pivot</span> &nbsp;·&nbsp;
-      Industry &amp; Funnel Stage inferred by watsonx AI <span class="ai-tag">● AI inferred</span>
+      Industry &amp; Funnel Stage mirror intent allocation (no Excel column) <span class="ai-tag">● Intent baseline</span>
     </div>`;
 
   pmContent.innerHTML = html;
