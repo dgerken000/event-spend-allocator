@@ -19,9 +19,10 @@
       --ibm-blue-light:  #edf4ff;
       --ibm-purple:      #6929c4;
       --ibm-purple-light:#f6f2ff;
-      --ibm-red:         #da1e28;     
+      --ibm-red:         #da1e28;
       --ibm-red-light:   #fff1f1;
       --ibm-green:       #198038;
+      --ibm-teal:        #007d79;
       --ibm-gray-10:     #f4f4f4;
       --ibm-gray-20:     #e0e0e0;
       --ibm-gray-40:     #a8a8a8;
@@ -42,6 +43,8 @@
       --cat-8: #198038;
       --cat-9: #002d9c;
       --cat-10:#ee538b;
+      --cat-11:#b28600;
+      --cat-12:#009d9a;
     }
 
     body {
@@ -69,68 +72,22 @@
       z-index: 100;
       flex-shrink: 0;
     }
-    .ibm-header__logo {
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      color: var(--ibm-white);
-    }
-    .ibm-header__divider {
-      width: 1px;
-      height: 20px;
-      background: rgba(255,255,255,0.4);
-    }
-    .ibm-header__title {
-      font-size: 14px;
-      font-weight: 400;
-      color: rgba(255,255,255,0.9);
-      letter-spacing: 0.16px;
-    }
+    .ibm-header__logo { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; color: var(--ibm-white); }
+    .ibm-header__divider { width: 1px; height: 20px; background: rgba(255,255,255,0.4); }
+    .ibm-header__title { font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.9); letter-spacing: 0.16px; }
 
     /* ── Main layout ─────────────────────────────────────────────────────── */
-    main {
-      flex: 1;
-      max-width: 960px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 2rem 1.5rem 4rem;
-    }
+    main { flex: 1; max-width: 980px; width: 100%; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
 
-    .page-title {
-      font-size: 28px;
-      font-weight: 300;
-      color: var(--ibm-gray-100);
-      margin-bottom: 0.25rem;
-    }
-    .page-subtitle {
-      font-size: 14px;
-      color: var(--ibm-gray-60);
-      margin-bottom: 2rem;
-    }
+    .page-title { font-size: 28px; font-weight: 300; color: var(--ibm-gray-100); margin-bottom: 0.25rem; }
+    .page-subtitle { font-size: 14px; color: var(--ibm-gray-60); margin-bottom: 2rem; }
 
     /* ── Card ────────────────────────────────────────────────────────────── */
-    .card {
-      background: var(--ibm-white);
-      border: 1px solid var(--ibm-gray-20);
-      margin-bottom: 1.5rem;
-    }
-    .card__header {
-      padding: 1rem 1.5rem 0.75rem;
-      border-bottom: 1px solid var(--ibm-gray-20);
-    }
-    .card__title {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--ibm-gray-100);
-    }
-    .card__hint {
-      font-size: 12px;
-      color: var(--ibm-gray-60);
-      margin-top: 2px;
-    }
-    .card__body {
-      padding: 1.5rem;
-    }
+    .card { background: var(--ibm-white); border: 1px solid var(--ibm-gray-20); margin-bottom: 1.5rem; }
+    .card__header { padding: 1rem 1.5rem 0.75rem; border-bottom: 1px solid var(--ibm-gray-20); }
+    .card__title { font-size: 16px; font-weight: 600; color: var(--ibm-gray-100); }
+    .card__hint { font-size: 12px; color: var(--ibm-gray-60); margin-top: 2px; }
+    .card__body { padding: 1.5rem; }
 
     /* ── Drop zone ───────────────────────────────────────────────────────── */
     .drop-zone {
@@ -142,204 +99,73 @@
       transition: border-color 0.15s, background 0.15s;
       position: relative;
     }
-    .drop-zone:hover,
-    .drop-zone.dragover {
-      border-color: var(--ibm-blue);
-      background: var(--ibm-blue-light);
-    }
-    .drop-zone__icon {
-      display: block;
-      margin: 0 auto 0.75rem;
-      width: 32px;
-      height: 32px;
-      color: var(--ibm-gray-60);
-    }
-    .drop-zone__label {
-      font-size: 14px;
-      color: var(--ibm-gray-60);
-    }
-    .drop-zone__label strong {
-      color: var(--ibm-blue);
-      cursor: pointer;
-      font-weight: 500;
-    }
-    .drop-zone__sub {
-      font-size: 12px;
-      color: var(--ibm-gray-40);
-      margin-top: 4px;
-    }
+    .drop-zone:hover, .drop-zone.dragover { border-color: var(--ibm-blue); background: var(--ibm-blue-light); }
+    .drop-zone__icon { display: block; margin: 0 auto 0.75rem; width: 32px; height: 32px; color: var(--ibm-gray-60); }
+    .drop-zone__label { font-size: 14px; color: var(--ibm-gray-60); }
+    .drop-zone__label strong { color: var(--ibm-blue); cursor: pointer; font-weight: 500; }
+    .drop-zone__sub { font-size: 12px; color: var(--ibm-gray-40); margin-top: 4px; }
     .drop-zone input[type="file"] { display: none; }
 
-    /* ── File selected state ─────────────────────────────────────────────── */
+    /* ── File info ───────────────────────────────────────────────────────── */
     .file-info {
-      display: none;
-      align-items: center;
-      gap: 0.75rem;
-      margin-top: 1rem;
-      padding: 0.75rem 1rem;
-      background: var(--ibm-blue-light);
-      border: 1px solid #b8d4ff;
+      display: none; align-items: center; gap: 0.75rem;
+      margin-top: 1rem; padding: 0.75rem 1rem;
+      background: var(--ibm-blue-light); border: 1px solid #b8d4ff;
     }
     .file-info.visible { display: flex; }
     .file-info__icon { color: var(--ibm-blue); flex-shrink: 0; }
     .file-info__name { font-size: 13px; font-weight: 500; color: var(--ibm-gray-100); }
     .file-info__meta { font-size: 12px; color: var(--ibm-gray-60); }
-    .file-info__slides {
-      margin-left: auto;
-      font-size: 12px;
-      color: var(--ibm-green);
-      font-weight: 500;
-      white-space: nowrap;
-    }
-    .file-info__remove {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--ibm-gray-60);
-      font-size: 16px;
-      padding: 0 4px;
-      margin-left: 4px;
-    }
+    .file-info__slides { margin-left: auto; font-size: 12px; color: var(--ibm-green); font-weight: 500; white-space: nowrap; }
+    .file-info__remove { background: none; border: none; cursor: pointer; color: var(--ibm-gray-60); font-size: 16px; padding: 0 4px; margin-left: 4px; }
     .file-info__remove:hover { color: var(--ibm-red); }
 
     /* ── Budget input ────────────────────────────────────────────────────── */
-    .budget-row {
-      margin-top: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      max-width: 320px;
-    }
-    .budget-row label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--ibm-gray-80);
-      letter-spacing: 0.32px;
-      text-transform: uppercase;
-    }
-    .budget-input-wrap {
-      display: flex;
-      align-items: stretch;
-      border: 1px solid var(--ibm-gray-40);
-      background: var(--ibm-white);
-    }
-    .budget-input-wrap:focus-within {
-      outline: 2px solid var(--ibm-blue);
-      outline-offset: -2px;
-    }
-    .budget-prefix {
-      display: flex;
-      align-items: center;
-      padding: 0 0.75rem;
-      background: var(--ibm-gray-10);
-      border-right: 1px solid var(--ibm-gray-20);
-      font-size: 14px;
-      color: var(--ibm-gray-60);
-      user-select: none;
-    }
-    #budget-input {
-      border: none;
-      outline: none;
-      padding: 0.6rem 0.75rem;
-      font-family: inherit;
-      font-size: 14px;
-      color: var(--ibm-gray-100);
-      background: transparent;
-      width: 100%;
-    }
+    .budget-row { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; max-width: 320px; }
+    .budget-row label { font-size: 12px; font-weight: 600; color: var(--ibm-gray-80); letter-spacing: 0.32px; text-transform: uppercase; }
+    .budget-input-wrap { display: flex; align-items: stretch; border: 1px solid var(--ibm-gray-40); background: var(--ibm-white); }
+    .budget-input-wrap:focus-within { outline: 2px solid var(--ibm-blue); outline-offset: -2px; }
+    .budget-prefix { display: flex; align-items: center; padding: 0 0.75rem; background: var(--ibm-gray-10); border-right: 1px solid var(--ibm-gray-20); font-size: 14px; color: var(--ibm-gray-60); user-select: none; }
+    #budget-input { border: none; outline: none; padding: 0.6rem 0.75rem; font-family: inherit; font-size: 14px; color: var(--ibm-gray-100); background: transparent; width: 100%; }
 
-    /* ── Primary button ──────────────────────────────────────────────────── */
+    /* ── Buttons ─────────────────────────────────────────────────────────── */
     .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      background: var(--ibm-blue);
-      color: var(--ibm-white);
-      border: none;
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      letter-spacing: 0.16px;
-      transition: background 0.15s;
-      margin-top: 1.5rem;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.5rem; background: var(--ibm-blue);
+      color: var(--ibm-white); border: none; font-family: inherit;
+      font-size: 14px; font-weight: 500; cursor: pointer;
+      letter-spacing: 0.16px; transition: background 0.15s; margin-top: 1.5rem;
     }
     .btn-primary:hover:not(:disabled) { background: var(--ibm-blue-hover); }
-    .btn-primary:disabled {
-      background: var(--ibm-gray-40);
-      cursor: not-allowed;
-    }
+    .btn-primary:disabled { background: var(--ibm-gray-40); cursor: not-allowed; }
 
-    /* ── Secondary button ────────────────────────────────────────────────── */
     .btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      background: var(--ibm-white);
-      color: var(--ibm-blue);
-      border: 1px solid var(--ibm-blue);
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      letter-spacing: 0.16px;
-      transition: background 0.15s, color 0.15s;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.5rem; background: var(--ibm-white);
+      color: var(--ibm-blue); border: 1px solid var(--ibm-blue);
+      font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer;
+      letter-spacing: 0.16px; transition: background 0.15s, color 0.15s;
     }
-    .btn-secondary:hover {
-      background: var(--ibm-blue);
-      color: var(--ibm-white);
-    }
+    .btn-secondary:hover { background: var(--ibm-blue); color: var(--ibm-white); }
 
     .btn-ghost {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      background: transparent;
-      color: var(--ibm-gray-80);
-      border: 1px solid var(--ibm-gray-40);
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 400;
-      cursor: pointer;
-      letter-spacing: 0.16px;
-      transition: background 0.15s;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.5rem; background: transparent;
+      color: var(--ibm-gray-80); border: 1px solid var(--ibm-gray-40);
+      font-family: inherit; font-size: 14px; font-weight: 400; cursor: pointer;
+      letter-spacing: 0.16px; transition: background 0.15s;
     }
     .btn-ghost:hover { background: var(--ibm-gray-10); }
 
     /* ── Notification / error ────────────────────────────────────────────── */
-    .notification {
-      display: none;
-      padding: 0.875rem 1rem 0.875rem 1.25rem;
-      border-left: 3px solid var(--ibm-red);
-      background: var(--ibm-red-light);
-      font-size: 13px;
-      color: var(--ibm-gray-100);
-      margin-top: 1rem;
-    }
+    .notification { display: none; padding: 0.875rem 1rem 0.875rem 1.25rem; border-left: 3px solid var(--ibm-red); background: var(--ibm-red-light); font-size: 13px; color: var(--ibm-gray-100); margin-top: 1rem; }
     .notification.visible { display: block; }
     .notification strong { color: var(--ibm-red); }
 
-    /* ── Loading state ───────────────────────────────────────────────────── */
-    .loading-bar {
-      display: none;
-      align-items: center;
-      gap: 0.75rem;
-      margin-top: 1rem;
-      font-size: 13px;
-      color: var(--ibm-gray-60);
-    }
+    /* ── Loading ─────────────────────────────────────────────────────────── */
+    .loading-bar { display: none; align-items: center; gap: 0.75rem; margin-top: 1rem; font-size: 13px; color: var(--ibm-gray-60); }
     .loading-bar.visible { display: flex; }
-    .spinner {
-      width: 16px; height: 16px;
-      border: 2px solid var(--ibm-gray-20);
-      border-top-color: var(--ibm-blue);
-      border-radius: 50%;
-      animation: spin 0.65s linear infinite;
-      flex-shrink: 0;
-    }
+    .spinner { width: 16px; height: 16px; border: 2px solid var(--ibm-gray-20); border-top-color: var(--ibm-blue); border-radius: 50%; animation: spin 0.65s linear infinite; flex-shrink: 0; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ── Results section ─────────────────────────────────────────────────── */
@@ -347,505 +173,133 @@
     #results-section.visible { display: block; }
 
     .results-banner {
-      background: var(--ibm-gray-90);
-      color: var(--ibm-white);
-      padding: 1rem 1.5rem;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.75rem;
+      background: var(--ibm-gray-90); color: var(--ibm-white);
+      padding: 1rem 1.5rem; margin-bottom: 1.5rem;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;
     }
-    .results-banner__budget {
-      font-size: 18px;
-      font-weight: 300;
-    }
-    .results-banner__budget strong {
-      font-weight: 600;
-      color: #78a9ff;
-    }
-    .results-banner__sub {
-      font-size: 12px;
-      color: rgba(255,255,255,0.6);
-      margin-top: 2px;
-    }
-    .results-banner__actions {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
+    .results-banner__budget { font-size: 18px; font-weight: 300; }
+    .results-banner__budget strong { font-weight: 600; color: #78a9ff; }
+    .results-banner__sub { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+    .results-banner__actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 
     /* ── Rationale panel ─────────────────────────────────────────────────── */
     .rationale-panel {
-      background: var(--ibm-gray-10);
-      border: 1px solid var(--ibm-gray-20);
-      border-left: 3px solid var(--ibm-blue);
-      padding: 1rem 1.25rem;
-      margin-bottom: 1.5rem;
+      background: var(--ibm-gray-10); border: 1px solid var(--ibm-gray-20);
+      border-left: 3px solid var(--ibm-blue); padding: 1rem 1.25rem; margin-bottom: 1.5rem;
     }
-    .rationale-panel__title {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.32px;
-      text-transform: uppercase;
-      color: var(--ibm-blue);
-      margin-bottom: 0.75rem;
-    }
-    .rationale-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.5rem 1.5rem;
-    }
-    @media (max-width: 680px) {
-      .rationale-grid { grid-template-columns: 1fr; }
-    }
-    .rationale-item__dim {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--ibm-gray-80);
-      margin-bottom: 1px;
-    }
-    .rationale-item__text {
-      font-size: 12px;
-      color: var(--ibm-gray-60);
-      line-height: 1.5;
-    }
+    .rationale-panel__title { font-size: 11px; font-weight: 600; letter-spacing: 0.32px; text-transform: uppercase; color: var(--ibm-blue); margin-bottom: 0.75rem; }
+    .rationale-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1.5rem; }
+    @media (max-width: 680px) { .rationale-grid { grid-template-columns: 1fr; } }
+    .rationale-item__dim { font-size: 11px; font-weight: 600; color: var(--ibm-gray-80); margin-bottom: 1px; }
+    .rationale-item__text { font-size: 12px; color: var(--ibm-gray-60); line-height: 1.5; }
 
     /* ── Dimension grid ──────────────────────────────────────────────────── */
-    .dim-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-    @media (max-width: 680px) {
-      .dim-grid { grid-template-columns: 1fr; }
-    }
+    .dim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 680px) { .dim-grid { grid-template-columns: 1fr; } }
 
     /* ── Dimension card ──────────────────────────────────────────────────── */
-    .dim-card {
-      background: var(--ibm-white);
-      border: 1px solid var(--ibm-gray-20);
-      padding: 1.25rem;
-    }
-    .dim-card__header {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.875rem;
-    }
-    .dim-card__title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--ibm-gray-100);
-      flex: 1;
-    }
-    .badge {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.32px;
-      text-transform: uppercase;
-      padding: 2px 7px;
-      border-radius: 2px;
-    }
-    .badge--strategic {
-      background: var(--ibm-blue-light);
-      color: var(--ibm-blue);
-    }
-    .badge--funnel {
-      background: var(--ibm-purple-light);
-      color: var(--ibm-purple);
-    }
+    .dim-card { background: var(--ibm-white); border: 1px solid var(--ibm-gray-20); padding: 1.25rem; }
+    .dim-card__header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.875rem; }
+    .dim-card__title { font-size: 13px; font-weight: 600; color: var(--ibm-gray-100); flex: 1; }
+
+    .badge { font-size: 10px; font-weight: 600; letter-spacing: 0.32px; text-transform: uppercase; padding: 2px 7px; border-radius: 2px; }
+    .badge--strategic { background: var(--ibm-blue-light); color: var(--ibm-blue); }
+    .badge--funnel    { background: var(--ibm-purple-light); color: var(--ibm-purple); }
+    .badge--division  { background: #e8f7f7; color: var(--ibm-teal); }
 
     /* ── Bar chart ───────────────────────────────────────────────────────── */
-    .bar-track {
-      display: flex;
-      height: 28px;
-      width: 100%;
-      overflow: hidden;
-      border-radius: 2px;
-      margin-bottom: 1rem;
-      gap: 1px;
-      background: var(--ibm-gray-20);
-    }
+    .bar-track { display: flex; height: 28px; width: 100%; overflow: hidden; border-radius: 2px; margin-bottom: 1rem; gap: 1px; background: var(--ibm-gray-20); }
     .bar-seg {
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      white-space: nowrap;
-      font-size: 11px;
-      font-weight: 500;
-      color: #fff;
-      transition: width 0.35s ease;
-      cursor: default;
-      min-width: 0;
-      flex-shrink: 0;
+      height: 100%; display: flex; align-items: center; justify-content: center;
+      overflow: hidden; white-space: nowrap; font-size: 11px; font-weight: 500;
+      color: #fff; transition: width 0.35s ease; cursor: default; min-width: 0; flex-shrink: 0;
     }
-    .bar-seg span {
-      padding: 0 4px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    @keyframes barIn {
-      from { width: 0 !important; }
-    }
+    .bar-seg span { padding: 0 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    @keyframes barIn { from { width: 0 !important; } }
     .bar-seg.animate { animation: barIn 0.5s ease forwards; }
 
     /* ── Legend table ────────────────────────────────────────────────────── */
-    .legend-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
-    .legend-table td {
-      padding: 4px 6px;
-      vertical-align: middle;
-    }
+    .legend-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .legend-table td { padding: 4px 6px; vertical-align: middle; }
     .legend-table tr:hover td { background: var(--ibm-gray-10); }
-    .swatch {
-      width: 10px; height: 10px;
-      border-radius: 1px;
-      display: inline-block;
-      flex-shrink: 0;
-    }
+    .swatch { width: 10px; height: 10px; border-radius: 1px; display: inline-block; flex-shrink: 0; }
     .td-swatch { width: 22px; }
     .td-label { color: var(--ibm-gray-80); }
-    .td-pct {
-      text-align: right;
-      color: var(--ibm-gray-60);
-      white-space: nowrap;
-      width: 56px;
-    }
-    .td-dollar {
-      text-align: right;
-      font-weight: 500;
-      color: var(--ibm-gray-100);
-      white-space: nowrap;
-      width: 90px;
-    }
+    .td-pct { text-align: right; color: var(--ibm-gray-60); white-space: nowrap; width: 56px; }
+    .td-dollar { text-align: right; font-weight: 500; color: var(--ibm-gray-100); white-space: nowrap; width: 90px; }
+
     /* ── Slider ──────────────────────────────────────────────────────────── */
-    .slider-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .pct-slider {
-      flex: 1;
-      -webkit-appearance: none;
-      appearance: none;
-      height: 4px;
-      border-radius: 2px;
-      background: var(--ibm-gray-20);
-      outline: none;
-      cursor: pointer;
-    }
-    .pct-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 16px; height: 16px;
-      border-radius: 50%;
-      background: var(--ibm-blue);
-      cursor: pointer;
-      border: 2px solid #fff;
-      box-shadow: 0 0 0 1px var(--ibm-blue);
-    }
-    .pct-slider::-moz-range-thumb {
-      width: 16px; height: 16px;
-      border-radius: 50%;
-      background: var(--ibm-blue);
-      cursor: pointer;
-      border: 2px solid #fff;
-      box-shadow: 0 0 0 1px var(--ibm-blue);
-    }
-    .pct-slider:focus::-webkit-slider-thumb {
-      box-shadow: 0 0 0 3px rgba(15,98,254,0.3);
-    }
-    .pct-value {
-      min-width: 36px;
-      text-align: right;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--ibm-gray-100);
-    }
+    .slider-row { display: flex; align-items: center; gap: 8px; }
+    .pct-slider { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; border-radius: 2px; background: var(--ibm-gray-20); outline: none; cursor: pointer; }
+    .pct-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--ibm-blue); cursor: pointer; border: 2px solid #fff; box-shadow: 0 0 0 1px var(--ibm-blue); }
+    .pct-slider::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--ibm-blue); cursor: pointer; border: 2px solid #fff; box-shadow: 0 0 0 1px var(--ibm-blue); }
+    .pct-slider:focus::-webkit-slider-thumb { box-shadow: 0 0 0 3px rgba(15,98,254,0.3); }
+    .pct-value { min-width: 36px; text-align: right; font-size: 12px; font-weight: 600; color: var(--ibm-gray-100); }
 
     /* ── Dim card actions ────────────────────────────────────────────────── */
-    .dim-card__actions {
-      display: flex;
-      gap: 6px;
-      margin-top: 0.875rem;
-      padding-top: 0.75rem;
-      border-top: 1px solid var(--ibm-gray-20);
-    }
-    .btn-dim {
-      flex: 1;
-      padding: 5px 8px;
-      font-family: inherit;
-      font-size: 11px;
-      font-weight: 500;
-      cursor: pointer;
-      border-radius: 2px;
-      letter-spacing: 0.16px;
-      transition: background 0.15s, color 0.15s;
-    }
-    .btn-dim--normalise {
-      background: var(--ibm-blue);
-      color: #fff;
-      border: none;
-    }
+    .dim-card__actions { display: flex; gap: 6px; margin-top: 0.875rem; padding-top: 0.75rem; border-top: 1px solid var(--ibm-gray-20); }
+    .btn-dim { flex: 1; padding: 5px 8px; font-family: inherit; font-size: 11px; font-weight: 500; cursor: pointer; border-radius: 2px; letter-spacing: 0.16px; transition: background 0.15s, color 0.15s; }
+    .btn-dim--normalise { background: var(--ibm-blue); color: #fff; border: none; }
     .btn-dim--normalise:hover { background: var(--ibm-blue-hover); }
-    .btn-dim--add {
-      background: var(--ibm-white);
-      color: var(--ibm-blue);
-      border: 1px solid var(--ibm-blue);
-    }
+    .btn-dim--add { background: var(--ibm-white); color: var(--ibm-blue); border: 1px solid var(--ibm-blue); }
     .btn-dim--add:hover { background: var(--ibm-blue); color: #fff; }
-    .add-form {
-      display: none;
-      margin-top: 0.5rem;
-      gap: 6px;
-      align-items: center;
-    }
+    .add-form { display: none; margin-top: 0.5rem; gap: 6px; align-items: center; }
     .add-form.visible { display: flex; }
-    .add-form input[type="text"] {
-      flex: 1;
-      border: 1px solid var(--ibm-gray-40);
-      padding: 4px 8px;
-      font-family: inherit;
-      font-size: 12px;
-      outline: none;
-    }
-    .add-form input[type="text"]:focus {
-      outline: 2px solid var(--ibm-blue);
-      outline-offset: -1px;
-    }
-    .add-form input[type="number"] {
-      width: 56px;
-      border: 1px solid var(--ibm-gray-40);
-      padding: 4px 6px;
-      font-family: inherit;
-      font-size: 12px;
-      text-align: right;
-      outline: none;
-    }
-    .add-form input[type="number"]:focus {
-      outline: 2px solid var(--ibm-blue);
-      outline-offset: -1px;
-    }
-    .btn-add-confirm {
-      padding: 4px 10px;
-      background: var(--ibm-green);
-      color: #fff;
-      border: none;
-      font-family: inherit;
-      font-size: 12px;
-      cursor: pointer;
-      border-radius: 2px;
-    }
+    .add-form input[type="text"] { flex: 1; border: 1px solid var(--ibm-gray-40); padding: 4px 8px; font-family: inherit; font-size: 12px; outline: none; }
+    .add-form input[type="text"]:focus { outline: 2px solid var(--ibm-blue); outline-offset: -1px; }
+    .add-form input[type="number"] { width: 56px; border: 1px solid var(--ibm-gray-40); padding: 4px 6px; font-family: inherit; font-size: 12px; text-align: right; outline: none; }
+    .add-form input[type="number"]:focus { outline: 2px solid var(--ibm-blue); outline-offset: -1px; }
+    .btn-add-confirm { padding: 4px 10px; background: var(--ibm-green); color: #fff; border: none; font-family: inherit; font-size: 12px; cursor: pointer; border-radius: 2px; }
     .btn-add-confirm:hover { background: #0e6027; }
 
-    /* ── Step 2 — Post-mortem upload ────────────────────────────────────── */
+    /* ── Step 2 ──────────────────────────────────────────────────────────── */
     .step2-card { margin-top: 2rem; }
-    .step-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.4px;
-      text-transform: uppercase;
-      color: var(--ibm-blue);
-      margin-bottom: 0.5rem;
-    }
-    .step-badge__num {
-      width: 18px; height: 18px;
-      background: var(--ibm-blue);
-      color: #fff;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 10px; font-weight: 700;
-    }
+    .step-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; color: var(--ibm-blue); margin-bottom: 0.5rem; }
+    .step-badge__num { width: 18px; height: 18px; background: var(--ibm-blue); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
 
-    /* ── Post-mortem summary page ───────────────────────────────────────── */
+    /* ── Post-mortem section ─────────────────────────────────────────────── */
     #postmortem-section { display: none; }
     #postmortem-section.visible { display: block; }
 
-    .pm-header {
-      background: var(--ibm-white);
-      border: 1px solid var(--ibm-gray-20);
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-    }
-    .pm-eyebrow {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--ibm-blue);
-      margin-bottom: 0.25rem;
-    }
-    .pm-title {
-      font-size: 24px;
-      font-weight: 300;
-      color: var(--ibm-gray-100);
-      margin-bottom: 0.25rem;
-    }
-    .pm-meta {
-      font-size: 11px;
-      color: var(--ibm-gray-60);
-    }
+    .pm-header { background: var(--ibm-white); border: 1px solid var(--ibm-gray-20); padding: 1.5rem; margin-bottom: 1rem; }
+    .pm-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--ibm-blue); margin-bottom: 0.25rem; }
+    .pm-title { font-size: 24px; font-weight: 300; color: var(--ibm-gray-100); margin-bottom: 0.25rem; }
+    .pm-meta { font-size: 11px; color: var(--ibm-gray-60); }
 
-    .pm-kpis {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      background: var(--ibm-gray-20);
-      border: 1px solid var(--ibm-gray-20);
-      margin-bottom: 1.5rem;
-    }
+    .pm-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--ibm-gray-20); border: 1px solid var(--ibm-gray-20); margin-bottom: 1.5rem; }
     @media (max-width: 680px) { .pm-kpis { grid-template-columns: repeat(2,1fr); } }
-    .pm-kpi {
-      background: var(--ibm-white);
-      padding: 1rem 1.25rem;
-    }
-    .pm-kpi__label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      color: var(--ibm-gray-60);
-      margin-bottom: 4px;
-    }
-    .pm-kpi__value {
-      font-size: 26px;
-      font-weight: 300;
-      color: var(--ibm-gray-100);
-    }
+    .pm-kpi { background: var(--ibm-white); padding: 1rem 1.25rem; }
+    .pm-kpi__label { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--ibm-gray-60); margin-bottom: 4px; }
+    .pm-kpi__value { font-size: 26px; font-weight: 300; color: var(--ibm-gray-100); }
     .pm-kpi__value.positive { color: var(--ibm-green); }
 
     /* ── Paired bar rows ────────────────────────────────────────────────── */
-    .pm-table {
-      background: var(--ibm-white);
-      border: 1px solid var(--ibm-gray-20);
-      padding: 0.75rem 1.25rem 1rem;
-      margin-bottom: 1rem;
-    }
-    .pm-table__header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      color: var(--ibm-gray-40);
-      border-bottom: 1px solid var(--ibm-gray-20);
-      padding-bottom: 0.5rem;
-      margin-bottom: 0.75rem;
-    }
-    .pm-row {
-      display: grid;
-      grid-template-columns: 160px 1fr 180px;
-      gap: 0.75rem;
-      align-items: start;
-      margin-bottom: 1.25rem;
-    }
-    @media (max-width: 680px) {
-      .pm-row { grid-template-columns: 1fr; }
-    }
-    .pm-row__label {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--ibm-gray-100);
-      padding-top: 4px;
-    }
+    .pm-table { background: var(--ibm-white); border: 1px solid var(--ibm-gray-20); padding: 0.75rem 1.25rem 1rem; margin-bottom: 1rem; }
+    .pm-table__header { display: flex; justify-content: space-between; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--ibm-gray-40); border-bottom: 1px solid var(--ibm-gray-20); padding-bottom: 0.5rem; margin-bottom: 0.75rem; }
+    .pm-row { display: grid; grid-template-columns: 160px 1fr 180px; gap: 0.75rem; align-items: start; margin-bottom: 1.25rem; }
+    @media (max-width: 680px) { .pm-row { grid-template-columns: 1fr; } }
+    .pm-row__label { font-size: 14px; font-weight: 600; color: var(--ibm-gray-100); padding-top: 4px; }
     .pm-bars { display: flex; flex-direction: column; gap: 3px; }
-    .pm-bar-line {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .pm-bar-type {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-      color: var(--ibm-gray-60);
-      width: 38px;
-      flex-shrink: 0;
-    }
-    .pm-bar-track {
-      flex: 1;
-      height: 24px;
-      display: flex;
-      gap: 1px;
-      background: var(--ibm-gray-20);
-      border-radius: 1px;
-      overflow: hidden;
-    }
-    .pm-bar-seg {
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 600;
-      color: #fff;
-      overflow: hidden;
-      white-space: nowrap;
-      transition: width 0.4s ease;
-    }
+    .pm-bar-line { display: flex; align-items: center; gap: 6px; }
+    .pm-bar-type { font-size: 10px; font-weight: 600; letter-spacing: 0.3px; color: var(--ibm-gray-60); width: 38px; flex-shrink: 0; }
+    .pm-bar-track { flex: 1; height: 24px; display: flex; gap: 1px; background: var(--ibm-gray-20); border-radius: 1px; overflow: hidden; }
+    .pm-bar-seg { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #fff; overflow: hidden; white-space: nowrap; transition: width 0.4s ease; }
     .pm-bar-seg span { padding: 0 3px; }
-    .pm-transitions {
-      font-size: 10px;
-      color: var(--ibm-gray-60);
-      margin-top: 3px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px 10px;
-    }
-    .pm-transitions span::before {
-      content: '■ ';
-      font-size: 8px;
-    }
-    .pm-multiples {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      padding-top: 4px;
-    }
-    .pm-mult-item {
-      font-size: 11px;
-      color: var(--ibm-gray-80);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .pm-mult-item::before {
-      content: '■';
-      font-size: 9px;
-    }
-    .pm-mult-val {
-      font-weight: 700;
-    }
+    .pm-transitions { font-size: 10px; color: var(--ibm-gray-60); margin-top: 3px; display: flex; flex-wrap: wrap; gap: 4px 10px; }
+    .pm-multiples { display: flex; flex-direction: column; gap: 4px; padding-top: 4px; }
+    .pm-mult-item { font-size: 11px; color: var(--ibm-gray-80); display: flex; align-items: center; gap: 4px; }
+    .pm-mult-val { font-weight: 700; }
     .pm-mult-val.above-avg { color: var(--ibm-green); }
     .pm-mult-val.below-avg { color: var(--ibm-gray-60); }
+    .pm-actions { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
 
-    .pm-actions {
-      display: flex;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }
+    /* ── Pivot source note ───────────────────────────────────────────────── */
+    .pivot-note { font-size: 10px; color: var(--ibm-gray-40); text-align: right; margin-top: 0.5rem; font-style: italic; }
+    .pivot-note span { color: var(--ibm-green); font-style: normal; font-weight: 600; }
+    .pivot-note span.ai-tag { color: var(--ibm-purple); }
 
     /* ── Footer ──────────────────────────────────────────────────────────── */
-    footer {
-      text-align: center;
-      font-size: 11px;
-      color: var(--ibm-gray-40);
-      border-top: 1px solid var(--ibm-gray-20);
-      padding: 1rem;
-      background: var(--ibm-white);
-    }
+    footer { text-align: center; font-size: 11px; color: var(--ibm-gray-40); border-top: 1px solid var(--ibm-gray-20); padding: 1rem; background: var(--ibm-white); }
   </style>
 </head>
 <body>
@@ -860,7 +314,7 @@
 <!-- ── Main ───────────────────────────────────────────────────────────────── -->
 <main>
   <h1 class="page-title">Event Spend Allocation</h1>
-  <p class="page-subtitle">Upload a Plan of Record to infer how the investment maps across IBM's 6 marketing taxonomy dimensions.</p>
+  <p class="page-subtitle">Upload a Plan of Record to infer how the investment maps across IBM's 7 marketing taxonomy dimensions.</p>
 
   <!-- Upload card -->
   <div class="card" id="upload-card">
@@ -870,7 +324,6 @@
     </div>
     <div class="card__body">
 
-      <!-- Drop zone -->
       <div class="drop-zone" id="drop-zone">
         <svg class="drop-zone__icon" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
           <path d="M26 15h-9V6h-2v9H6v2h9v9h2v-9h9z"/>
@@ -881,7 +334,6 @@
         <input type="file" id="file-input" accept=".pptx" />
       </div>
 
-      <!-- File info -->
       <div class="file-info" id="file-info">
         <svg class="file-info__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
           <path d="M25.7 9.3l-7-7A1 1 0 0018 2H8a2 2 0 00-2 2v24a2 2 0 002 2h16a2 2 0 002-2V10a1 1 0 00-.3-.7zM18 4.4l5.6 5.6H18zM24 28H8V4h8v8h8z"/>
@@ -894,7 +346,6 @@
         <button class="file-info__remove" id="remove-file" title="Remove file">✕</button>
       </div>
 
-      <!-- Budget -->
       <div class="budget-row">
         <label for="budget-input">Total Event Budget (USD)</label>
         <div class="budget-input-wrap">
@@ -903,7 +354,6 @@
         </div>
       </div>
 
-      <!-- Action -->
       <button class="btn-primary" id="analyse-btn" disabled>
         <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
           <path d="M16 2a14 14 0 100 28A14 14 0 0016 2zm0 26A12 12 0 114 16 12 12 0 0116 28zm0-20a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z"/>
@@ -911,26 +361,22 @@
         Analyse &amp; Allocate
       </button>
 
-      <!-- Loading -->
       <div class="loading-bar" id="loading-bar">
         <div class="spinner"></div>
-        <span>Analysing your event plan across 6 IBM taxonomy dimensions…</span>
+        <span id="loading-text">Analysing your event plan across 7 IBM taxonomy dimensions…</span>
       </div>
 
-      <!-- Error notification -->
       <div class="notification" id="error-box"></div>
-
     </div>
   </div>
 
   <!-- Results section -->
   <div id="results-section">
 
-    <!-- Summary banner + actions -->
     <div class="results-banner">
       <div>
         <div class="results-banner__budget" id="budget-summary">Total Budget: <strong>—</strong></div>
-        <div class="results-banner__sub">Analysed across 6 IBM marketing taxonomy dimensions</div>
+        <div class="results-banner__sub">Analysed across 7 IBM marketing taxonomy dimensions</div>
       </div>
       <div class="results-banner__actions">
         <button class="btn-secondary" id="export-btn">
@@ -939,19 +385,15 @@
           </svg>
           Export CSV
         </button>
-        <button class="btn-ghost" id="reset-btn">
-          Start Over
-        </button>
+        <button class="btn-ghost" id="reset-btn">Start Over</button>
       </div>
     </div>
 
-    <!-- Rationale panel -->
     <div class="rationale-panel" id="rationale-panel" style="display:none">
       <div class="rationale-panel__title">AI Rationale</div>
       <div class="rationale-grid" id="rationale-grid"></div>
     </div>
 
-    <!-- Dimension panels grid -->
     <div class="dim-grid" id="dim-grid"></div>
 
     <!-- Step 2: Post-mortem upload -->
@@ -959,7 +401,7 @@
       <div class="card__header">
         <div class="step-badge"><span class="step-badge__num">2</span> Post-Event Analysis</div>
         <div class="card__title">Upload Post-Event Impact Data</div>
-        <div class="card__hint">Upload an Excel (.xlsx) file with post-event results. The AI will map your data to the same 6 dimensions and generate an Intent vs. Uplift post-mortem.</div>
+        <div class="card__hint">Upload an Excel (.xlsx) file with post-event results. Pivots for 5 dimensions are computed exactly from the data; Industry and Funnel Stage are inferred by AI.</div>
       </div>
       <div class="card__body">
         <div class="drop-zone" id="drop-zone-2">
@@ -983,7 +425,6 @@
           <button class="file-info__remove" id="remove-file-2" title="Remove file">✕</button>
         </div>
 
-        <!-- hidden elements kept for JS compatibility -->
         <input type="hidden" id="pipeline-input" />
         <input type="hidden" id="opps-input" />
         <input type="hidden" id="event-name-input" />
@@ -996,7 +437,7 @@
         </button>
         <div class="loading-bar" id="loading-bar-2">
           <div class="spinner"></div>
-          <span>Analysing post-event data and mapping to taxonomy dimensions…</span>
+          <span>Computing pivot tables &amp; calling AI for Industry + Funnel Stage…</span>
         </div>
         <div class="notification" id="error-box-2"></div>
       </div>
@@ -1020,33 +461,37 @@
 
 </main>
 
-<footer>Made with IBM Bob</footer>
+<footer>Made with IBM Bob &nbsp;·&nbsp; IBM Marketing Investment Allocator</footer>
 
 <script>
-  /* ── Constants ─────────────────────────────────────────────────────────── */
-  // Cloudflare Worker URL — update this after deploying cloudflare-worker.js
-  const WORKER_URL = 'https://sparkling-sun-a30f.david-gerken.workers.dev';
+/* ════════════════════════════════════════════════════════════════════════════
+ * CONSTANTS & CONFIG
+ * ════════════════════════════════════════════════════════════════════════════ */
 
-  const CAT_COLOURS = [
-    '#0f62fe','#6929c4','#1192e8','#005d5d',
-    '#9f1853','#fa4d56','#570408','#198038',
-    '#002d9c','#ee538b'
-  ];
+const WORKER_URL = 'https://sparkling-sun-a30f.david-gerken.workers.dev';
 
-  const DIMENSION_CONFIG = [
-    { key: 'offering_product', label: 'Offering / Product',  badge: 'strategic' },
-    { key: 'market_geography', label: 'Market / Geography',  badge: 'strategic' },
-    { key: 'customer_segment', label: 'Customer Segment',    badge: 'strategic' },
-    { key: 'industry',         label: 'Industry',            badge: 'strategic' },
-    { key: 'persona',          label: 'Persona',             badge: 'strategic' },
-    { key: 'funnel_stage',     label: 'Funnel Stage',        badge: 'funnel'    },
-  ];
+const CAT_COLOURS = [
+  '#0f62fe','#6929c4','#1192e8','#005d5d',
+  '#9f1853','#fa4d56','#570408','#198038',
+  '#002d9c','#ee538b','#b28600','#009d9a'
+];
 
-  const SYSTEM_PROMPT = `You are an IBM marketing taxonomy expert. Analyse the provided corporate event Plan of Record (PoR) and allocate 100% of the event investment across each of IBM's 6 marketing taxonomy dimensions.
+// 7 dimensions — IBM_DIVISION added as the 7th
+const DIMENSION_CONFIG = [
+  { key: 'offering_product', label: 'Offering / Product',   badge: 'strategic' },
+  { key: 'market_geography', label: 'Market / Geography',   badge: 'strategic' },
+  { key: 'customer_segment', label: 'Customer Segment',     badge: 'strategic' },
+  { key: 'industry',         label: 'Industry',             badge: 'strategic' },
+  { key: 'persona',          label: 'Persona',              badge: 'strategic' },
+  { key: 'funnel_stage',     label: 'Funnel Stage',         badge: 'funnel'    },
+  { key: 'ibm_division',     label: 'IBM Division / Brand', badge: 'division'  },
+];
 
-For each dimension, select ONLY the elements that are genuinely relevant to this event (2–7 elements per dimension). Assign integer percentages that sum to exactly 100 for each dimension. Add a concise rationale (1–2 sentences max) explaining why you allocated the spend that way for that dimension.
+const SYSTEM_PROMPT = `You are an IBM marketing taxonomy expert. Analyse the provided corporate event Plan of Record (PoR) and allocate 100% of the event investment across each of IBM's 7 marketing taxonomy dimensions.
 
-Return ONLY a raw JSON object — no markdown, no prose, no code fences. The JSON must have exactly these 6 keys:
+For each dimension, select ONLY the elements that are genuinely relevant to this event (2–7 elements per dimension). Assign integer percentages that sum to exactly 100 for each dimension. Add a concise rationale (1–2 sentences max) explaining the allocation logic.
+
+Return ONLY a raw JSON object — no markdown, no prose, no code fences. The JSON must have exactly these 7 keys:
 
 {
   "offering_product":  {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]},
@@ -1054,7 +499,8 @@ Return ONLY a raw JSON object — no markdown, no prose, no code fences. The JSO
   "customer_segment":  {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]},
   "industry":          {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]},
   "persona":           {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]},
-  "funnel_stage":      {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]}
+  "funnel_stage":      {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]},
+  "ibm_division":      {"rationale": "...", "items": [{"label":"...", "pct": N}, ...]}
 }
 
 ## Canonical element lists — use ONLY labels from these lists (verbatim):
@@ -1077,899 +523,955 @@ Chief Executive Officer (CEO), Chief Information Officer (CIO), Chief Technology
 ### funnel_stage — IBM funnel framework (fixed 5 stages):
 Brand Awareness, Consideration, Demand Generation, Engaged to Qualified, Qualified to Win
 
+### ibm_division — IBM top-level business divisions / brands:
+IBM Software, IBM Consulting, IBM Infrastructure, IBM Research, IBM Financing, IBM Technology Lifecycle Services
+
 IMPORTANT: Each dimension's items pct values must sum to exactly 100. Use only labels from the canonical lists above. Keep each rationale to 1–2 sentences.`;
 
-  const USD = new Intl.NumberFormat('en-US', {
-    style: 'currency', currency: 'USD', maximumFractionDigits: 0
-  });
+const USD = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 
-  /* ── App state ──────────────────────────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════════════════════
+ * APP STATE
+ * ════════════════════════════════════════════════════════════════════════════ */
 
-  const state = {
-    slideText:  '',
-    budget:     0,
-    allocation: null,
-    fileName:   '',
-    slideCount: 0,
-  };
+const state = {
+  slideText:   '',
+  budget:      0,
+  allocation:  null,
+  fileName:    '',
+  slideCount:  0,
+  excelText:   '',
+  excelRows:   null,
+  excelPivots: null,
+  postmortem:  null,
+};
 
-  /* ── DOM refs ───────────────────────────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════════════════════
+ * DOM REFS
+ * ════════════════════════════════════════════════════════════════════════════ */
 
-  const dropZone      = document.getElementById('drop-zone');
-  const fileInput     = document.getElementById('file-input');
-  const browseLink    = document.getElementById('browse-link');
-  const fileInfo      = document.getElementById('file-info');
-  const fileNameEl    = document.getElementById('file-name');
-  const fileMetaEl    = document.getElementById('file-meta');
-  const slideCountEl  = document.getElementById('slide-count');
-  const removeFileBtn = document.getElementById('remove-file');
-  const budgetInput    = document.getElementById('budget-input');
-  const rationalePanel = document.getElementById('rationale-panel');
-  const rationaleGrid  = document.getElementById('rationale-grid');
-  const analyseBtn    = document.getElementById('analyse-btn');
-  const loadingBar    = document.getElementById('loading-bar');
-  const errorBox      = document.getElementById('error-box');
-  const resultsSection= document.getElementById('results-section');
-  const budgetSummary = document.getElementById('budget-summary');
-  const dimGrid       = document.getElementById('dim-grid');
-  const exportBtn     = document.getElementById('export-btn');
-  const resetBtn      = document.getElementById('reset-btn');
+const dropZone       = document.getElementById('drop-zone');
+const fileInput      = document.getElementById('file-input');
+const browseLink     = document.getElementById('browse-link');
+const fileInfo       = document.getElementById('file-info');
+const fileNameEl     = document.getElementById('file-name');
+const fileMetaEl     = document.getElementById('file-meta');
+const slideCountEl   = document.getElementById('slide-count');
+const removeFileBtn  = document.getElementById('remove-file');
+const budgetInput    = document.getElementById('budget-input');
+const rationalePanel = document.getElementById('rationale-panel');
+const rationaleGrid  = document.getElementById('rationale-grid');
+const analyseBtn     = document.getElementById('analyse-btn');
+const loadingBar     = document.getElementById('loading-bar');
+const loadingText    = document.getElementById('loading-text');
+const errorBox       = document.getElementById('error-box');
+const resultsSection = document.getElementById('results-section');
+const budgetSummary  = document.getElementById('budget-summary');
+const dimGrid        = document.getElementById('dim-grid');
+const exportBtn      = document.getElementById('export-btn');
+const resetBtn       = document.getElementById('reset-btn');
 
-  /* ── File handling ──────────────────────────────────────────────────────── */
+const dropZone2      = document.getElementById('drop-zone-2');
+const fileInput2     = document.getElementById('file-input-2');
+const browseLink2    = document.getElementById('browse-link-2');
+const fileInfo2      = document.getElementById('file-info-2');
+const fileName2El    = document.getElementById('file-name-2');
+const fileMeta2El    = document.getElementById('file-meta-2');
+const sheetCountEl   = document.getElementById('sheet-count');
+const removeFile2    = document.getElementById('remove-file-2');
+const postmortemBtn  = document.getElementById('postmortem-btn');
+const loadingBar2    = document.getElementById('loading-bar-2');
+const errorBox2      = document.getElementById('error-box-2');
+const pmSection      = document.getElementById('postmortem-section');
+const pmContent      = document.getElementById('pm-content');
+const pmExportBtn    = document.getElementById('pm-export-btn');
+const pmResetBtn     = document.getElementById('pm-reset-btn');
 
-  browseLink.addEventListener('click', () => fileInput.click());
-  dropZone.addEventListener('click', e => {
-    if (e.target === browseLink) return;
-    fileInput.click();
-  });
+/* ════════════════════════════════════════════════════════════════════════════
+ * STEP 1 — PPTX UPLOAD & ANALYSE
+ * ════════════════════════════════════════════════════════════════════════════ */
 
-  dropZone.addEventListener('dragover', e => {
-    e.preventDefault();
-    dropZone.classList.add('dragover');
-  });
-  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-  dropZone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropZone.classList.remove('dragover');
-    const f = e.dataTransfer.files[0];
-    if (f) handleFile(f);
-  });
-  fileInput.addEventListener('change', () => {
-    if (fileInput.files[0]) handleFile(fileInput.files[0]);
-    fileInput.value = '';
-  });
+browseLink.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('click', e => { if (e.target !== browseLink) fileInput.click(); });
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('dragover');
+  const f = e.dataTransfer.files[0]; if (f) handleFile(f);
+});
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) handleFile(fileInput.files[0]);
+  fileInput.value = '';
+});
+removeFileBtn.addEventListener('click', () => clearFile());
 
-  removeFileBtn.addEventListener('click', () => clearFile());
+async function handleFile(file) {
+  clearError();
+  if (!file.name.toLowerCase().endsWith('.pptx')) {
+    showError('Only .pptx files are accepted. Please upload a PowerPoint file.');
+    return;
+  }
+  state.fileName = file.name;
+  fileNameEl.textContent = file.name;
+  fileMetaEl.textContent = formatBytes(file.size);
+  slideCountEl.textContent = 'Extracting slides…';
+  fileInfo.classList.add('visible');
 
-  async function handleFile(file) {
-    clearError();
-    if (!file.name.toLowerCase().endsWith('.pptx')) {
-      showError('Only .pptx files are accepted. Please upload a PowerPoint file.');
-      return;
+  try {
+    const buf    = await file.arrayBuffer();
+    const zip    = await JSZip.loadAsync(buf);
+    const slides = Object.keys(zip.files)
+      .filter(n => /^ppt\/slides\/slide\d+\.xml$/i.test(n))
+      .sort((a, b) => parseInt(a.match(/\d+/)[0],10) - parseInt(b.match(/\d+/)[0],10));
+
+    if (slides.length === 0) {
+      showError('No slide content found in this .pptx file.');
+      clearFile(); return;
     }
+    const parts = await Promise.all(
+      slides.map(name => zip.files[name].async('string')
+        .then(xml => xml.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()))
+    );
+    state.slideText  = parts.join('\n\n--- SLIDE BREAK ---\n\n');
+    state.slideCount = slides.length;
+    slideCountEl.textContent = `✓ ${slides.length} slide${slides.length !== 1 ? 's' : ''} extracted`;
+  } catch (err) {
+    showError('Failed to read the .pptx file. Ensure it is a valid PowerPoint file.');
+    clearFile(); return;
+  }
+  updateAnalyseBtn();
+}
 
-    state.fileName = file.name;
-    fileNameEl.textContent = file.name;
-    fileMetaEl.textContent = formatBytes(file.size);
-    slideCountEl.textContent = 'Extracting slides…';
-    fileInfo.classList.add('visible');
+function clearFile() {
+  state.slideText = ''; state.fileName = ''; state.slideCount = 0;
+  fileInfo.classList.remove('visible');
+  fileNameEl.textContent = '—'; fileMetaEl.textContent = ''; slideCountEl.textContent = '';
+  updateAnalyseBtn();
+}
 
-    try {
-      const buf    = await file.arrayBuffer();
-      const zip    = await JSZip.loadAsync(buf);
-      const slides = Object.keys(zip.files)
-        .filter(n => /^ppt\/slides\/slide\d+\.xml$/i.test(n))
-        .sort((a, b) => {
-          const na = parseInt(a.match(/\d+/)[0], 10);
-          const nb = parseInt(b.match(/\d+/)[0], 10);
-          return na - nb;
-        });
+budgetInput.addEventListener('input', () => {
+  state.budget = parseInt(budgetInput.value.replace(/[^0-9]/g,''), 10) || 0;
+  updateAnalyseBtn();
+});
+budgetInput.addEventListener('blur', () => {
+  if (state.budget > 0) budgetInput.value = state.budget.toLocaleString('en-US');
+});
+budgetInput.addEventListener('focus', () => {
+  budgetInput.value = state.budget > 0 ? String(state.budget) : '';
+});
 
-      if (slides.length === 0) {
-        showError('No slide content found in this .pptx file. Please check the file and try again.');
-        clearFile();
-        return;
-      }
+function updateAnalyseBtn() {
+  analyseBtn.disabled = !(state.slideText && state.budget > 0);
+}
 
-      const parts = await Promise.all(
-        slides.map(name => zip.files[name].async('string')
-          .then(xml => xml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()))
-      );
+analyseBtn.addEventListener('click', async () => {
+  clearError();
+  setLoading(true);
+  resultsSection.classList.remove('visible');
 
-      state.slideText  = parts.join('\n\n--- SLIDE BREAK ---\n\n');
-      state.slideCount = slides.length;
-      slideCountEl.textContent = `✓ ${slides.length} slide${slides.length !== 1 ? 's' : ''} extracted`;
-      console.log('[PPTX] Extracted text:\n', state.slideText);
-    } catch (err) {
-      showError('Failed to read the .pptx file. Ensure it is a valid PowerPoint file.');
-      clearFile();
-      return;
-    }
+  try {
+    const allocation = await callWatsonx(state.slideText, state.budget);
+    state.allocation = allocation;
+    renderAllDimensions(allocation, state.budget);
+    resultsSection.classList.add('visible');
+    resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (err) {
+    showError(err.message || 'An unexpected error occurred. Check the browser console for details.');
+  } finally {
+    setLoading(false);
+  }
+});
 
-    updateAnalyseBtn();
+async function callWatsonx(slideText, budget) {
+  const truncated = slideText.slice(0, 8000);
+  const prompt    = `${SYSTEM_PROMPT}\n\nEvent Plan of Record (extracted from .pptx):\n\n${truncated}\n\nTotal event budget: ${USD.format(budget)}\n\nReturn the JSON allocation now:`;
+
+  let res;
+  try {
+    res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ prompt }),
+    });
+  } catch (_) {
+    throw new Error('Network error — could not reach the server. Check your connection.');
   }
 
-  function clearFile() {
-    state.slideText  = '';
-    state.fileName   = '';
-    state.slideCount = 0;
-    fileInfo.classList.remove('visible');
-    fileNameEl.textContent = '—';
-    fileMetaEl.textContent = '';
-    slideCountEl.textContent = '';
-    updateAnalyseBtn();
+  if (!res.ok) {
+    let detail = '';
+    try { detail = (await res.json()).error || ''; } catch (_) {}
+    throw new Error(`Server error (HTTP ${res.status})${detail ? ': ' + detail : ''}.`);
   }
 
-  /* ── Budget input ───────────────────────────────────────────────────────── */
-
-  budgetInput.addEventListener('input', () => {
-    const raw = budgetInput.value.replace(/[^0-9]/g, '');
-    state.budget = parseInt(raw, 10) || 0;
-    updateAnalyseBtn();
-  });
-
-  budgetInput.addEventListener('blur', () => {
-    if (state.budget > 0) {
-      budgetInput.value = state.budget.toLocaleString('en-US');
-    }
-  });
-
-  budgetInput.addEventListener('focus', () => {
-    budgetInput.value = state.budget > 0 ? String(state.budget) : '';
-  });
-
-  /* ── Enable/disable analyse button ─────────────────────────────────────── */
-
-  function updateAnalyseBtn() {
-    analyseBtn.disabled = !(state.slideText && state.budget > 0);
+  let body;
+  try { body = await res.json(); } catch (_) {
+    throw new Error('Received an unreadable response from the server.');
   }
 
-  /* ── Analyse button ─────────────────────────────────────────────────────── */
+  const raw = body?.generated_text ?? '';
+  let allocation;
+  try {
+    const cleaned = raw.replace(/^\s*```[a-z]*\s*/i,'').replace(/\s*```\s*$/,'').trim();
+    const match   = cleaned.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('no JSON object found');
+    allocation = JSON.parse(match[0]);
+  } catch (_) {
+    console.error('[watsonx] Raw response:\n', raw);
+    throw new Error('The AI returned an invalid JSON response. See the browser console for details.');
+  }
 
-  analyseBtn.addEventListener('click', async () => {
-    clearError();
-    setLoading(true);
-    resultsSection.classList.remove('visible');
+  validateAllocation(allocation);
+  return allocation;
+}
 
-    try {
-      const allocation = await callWatsonx(state.slideText, state.budget);
-      state.allocation = allocation;
-      renderAllDimensions(allocation, state.budget);
-      resultsSection.classList.add('visible');
-      resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } catch (err) {
-      showError(err.message || 'An unexpected error occurred. Check the browser console for details.');
-    } finally {
-      setLoading(false);
+function validateAllocation(a) {
+  for (const dim of DIMENSION_CONFIG) {
+    const val   = a[dim.key];
+    const items = Array.isArray(val) ? val : val?.items;
+    if (!Array.isArray(items) || items.length === 0) {
+      // Provide a graceful fallback for missing dimensions instead of throwing
+      a[dim.key] = { rationale: '', items: [{ label: 'Unallocated', pct: 100 }] };
+      continue;
     }
-  });
-
-  /* ── watsonx.ai API — calls Flask proxy, credentials stay server-side ───── */
-
-  async function callWatsonx(slideText, budget) {
-    const truncated = slideText.slice(0, 8000);
-    const prompt    = `${SYSTEM_PROMPT}\n\nEvent Plan of Record (extracted from .pptx):\n\n${truncated}\n\nTotal event budget: ${USD.format(budget)}\n\nReturn the JSON allocation now:`;
-
-    let res;
-    try {
-      res = await fetch(WORKER_URL, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ prompt }),
+    const sum = items.reduce((s, x) => s + (Number(x.pct) || 0), 0);
+    if (Math.abs(sum - 100) > 2) {
+      // Auto-normalise rather than throwing
+      const factor = 100 / sum;
+      let running = 0;
+      items.forEach((it, i) => {
+        if (i < items.length - 1) { it.pct = Math.round(it.pct * factor); running += it.pct; }
+        else { it.pct = 100 - running; }
       });
-    } catch (_) {
-      throw new Error('Network error — could not reach the server. Check your connection.');
     }
-
-    if (!res.ok) {
-      let detail = '';
-      try { detail = (await res.json()).error || ''; } catch (_) {}
-      throw new Error(`Server error (HTTP ${res.status})${detail ? ': ' + detail : ''}.`);
-    }
-
-    let body;
-    try { body = await res.json(); } catch (_) {
-      throw new Error('Received an unreadable response from the server.');
-    }
-
-    const raw = body?.generated_text ?? '';
-    let allocation;
-    try {
-      const cleaned = raw.replace(/^\s*```[a-z]*\s*/i, '').replace(/\s*```\s*$/, '').trim();
-      const match = cleaned.match(/\{[\s\S]*\}/);
-      if (!match) throw new Error('no JSON object found');
-      allocation = JSON.parse(match[0]);
-    } catch (_) {
-      console.error('[server] Raw response:\n', raw);
-      throw new Error('The AI returned an invalid JSON response. See the browser console for details.');
-    }
-
-    validateAllocation(allocation);
-    return allocation;
+    if (Array.isArray(val)) a[dim.key] = { rationale: '', items: val };
   }
+}
 
-  function validateAllocation(a) {
-    for (const dim of DIMENSION_CONFIG) {
-      const val = a[dim.key];
-      // Support both new {rationale, items} schema and legacy flat array
-      const items = Array.isArray(val) ? val : val?.items;
-      if (!Array.isArray(items) || items.length === 0) {
-        throw new Error(`Missing or empty dimension in AI response: "${dim.key}".`);
-      }
-      const sum = items.reduce((s, x) => s + (Number(x.pct) || 0), 0);
-      if (Math.abs(sum - 100) > 1.5) {
-        throw new Error(`Dimension "${dim.label}" percentages sum to ${sum.toFixed(1)}, expected 100.`);
-      }
-      // Normalise to always have {rationale, items} shape
-      if (Array.isArray(val)) {
-        a[dim.key] = { rationale: '', items: val };
-      }
-    }
+/* ── Render all dimensions ──────────────────────────────────────────────── */
+
+function renderAllDimensions(allocation, budget) {
+  budgetSummary.innerHTML = `Total Budget: <strong>${USD.format(budget)}</strong>`;
+  document.getElementById('step2-card').style.display = '';
+
+  rationaleGrid.innerHTML = '';
+  for (const dimCfg of DIMENSION_CONFIG) {
+    const rationale = allocation[dimCfg.key]?.rationale || '';
+    if (!rationale) continue;
+    const cell = document.createElement('div');
+    cell.innerHTML = `<div class="rationale-item__dim">${escHtml(dimCfg.label)}</div>
+      <div class="rationale-item__text">${escHtml(rationale)}</div>`;
+    rationaleGrid.appendChild(cell);
   }
+  rationalePanel.style.display = rationaleGrid.children.length ? '' : 'none';
 
-  /* ── Render all dimensions ──────────────────────────────────────────────── */
-
-  function renderAllDimensions(allocation, budget) {
-    budgetSummary.innerHTML = `Total Budget: <strong>${USD.format(budget)}</strong>`;
-    // Show Step 2 card once intent allocation is done
-    document.getElementById('step2-card').style.display = '';
-
-    // Rationale panel
-    rationaleGrid.innerHTML = '';
-    for (const dimCfg of DIMENSION_CONFIG) {
-      const rationale = allocation[dimCfg.key]?.rationale || '';
-      if (!rationale) continue;
-      const cell = document.createElement('div');
-      cell.innerHTML = `<div class="rationale-item__dim">${escHtml(dimCfg.label)}</div>
-        <div class="rationale-item__text">${escHtml(rationale)}</div>`;
-      rationaleGrid.appendChild(cell);
-    }
-    rationalePanel.style.display = rationaleGrid.children.length ? '' : 'none';
-
-    // Dimension cards
-    dimGrid.innerHTML = '';
-    for (const dimCfg of DIMENSION_CONFIG) {
-      const items = allocation[dimCfg.key]?.items || allocation[dimCfg.key];
-      dimGrid.appendChild(renderDimension(dimCfg, items, budget));
-    }
+  dimGrid.innerHTML = '';
+  for (const dimCfg of DIMENSION_CONFIG) {
+    const items = allocation[dimCfg.key]?.items || allocation[dimCfg.key];
+    dimGrid.appendChild(renderDimension(dimCfg, items, budget));
   }
+}
 
-  function renderDimension(dimCfg, items, budget) {
-    const card = document.createElement('div');
-    card.className = 'dim-card';
-    card.dataset.dimKey = dimCfg.key;
+function renderDimension(dimCfg, items, budget) {
+  const card = document.createElement('div');
+  card.className = 'dim-card';
+  card.dataset.dimKey = dimCfg.key;
 
-    // Header
-    const hdr = document.createElement('div');
-    hdr.className = 'dim-card__header';
-    hdr.innerHTML = `<span class="dim-card__title">${dimCfg.label}</span>
-      <span class="badge badge--${dimCfg.badge}">${dimCfg.badge === 'funnel' ? 'Funnel' : 'Strategic'}</span>`;
-    card.appendChild(hdr);
+  const badgeLabel = dimCfg.badge === 'funnel' ? 'Funnel' : dimCfg.badge === 'division' ? 'Division' : 'Strategic';
+  const hdr = document.createElement('div');
+  hdr.className = 'dim-card__header';
+  hdr.innerHTML = `<span class="dim-card__title">${dimCfg.label}</span>
+    <span class="badge badge--${dimCfg.badge}">${badgeLabel}</span>`;
+  card.appendChild(hdr);
 
-    // Bar track
-    const track = document.createElement('div');
-    track.className = 'bar-track';
-    track.dataset.dimKey = dimCfg.key;
-    items.forEach((item, i) => {
-      const seg = document.createElement('div');
-      seg.className = 'bar-seg animate';
-      seg.style.width = item.pct + '%';
-      seg.style.background = CAT_COLOURS[i % CAT_COLOURS.length];
-      seg.title = `${item.label}: ${item.pct}% (${USD.format(budget * item.pct / 100)})`;
-      seg.dataset.idx = i;
-      if (item.pct >= 8) {
-        seg.innerHTML = `<span>${item.pct}%</span>`;
-      }
-      track.appendChild(seg);
+  const track = document.createElement('div');
+  track.className = 'bar-track';
+  track.dataset.dimKey = dimCfg.key;
+  items.forEach((item, i) => {
+    const seg = document.createElement('div');
+    seg.className = 'bar-seg animate';
+    seg.style.width      = item.pct + '%';
+    seg.style.background = CAT_COLOURS[i % CAT_COLOURS.length];
+    seg.title            = `${item.label}: ${item.pct}% (${USD.format(budget * item.pct / 100)})`;
+    seg.dataset.idx      = i;
+    if (item.pct >= 8) seg.innerHTML = `<span>${item.pct}%</span>`;
+    track.appendChild(seg);
+  });
+  card.appendChild(track);
+
+  const tbl = document.createElement('table');
+  tbl.className = 'legend-table';
+  items.forEach((item, i) => {
+    const colour  = CAT_COLOURS[i % CAT_COLOURS.length];
+    const dollars = budget * item.pct / 100;
+    const pct     = Math.round(item.pct);
+    const tr = document.createElement('tr');
+    tr.dataset.dimKey = dimCfg.key;
+    tr.dataset.idx    = i;
+    tr.innerHTML = `
+      <td class="td-swatch"><span class="swatch" style="background:${colour}"></span></td>
+      <td class="td-label">${escHtml(item.label)}</td>
+      <td style="width:120px;padding:4px 6px">
+        <div class="slider-row">
+          <input type="range" class="pct-slider" min="0" max="100" step="1" value="${pct}"
+            data-dim-key="${dimCfg.key}" data-idx="${i}"
+            aria-label="${escHtml(item.label)} percentage" />
+          <span class="pct-value" data-dim-key="${dimCfg.key}" data-idx="${i}">${pct}%</span>
+        </div>
+      </td>
+      <td class="td-dollar" data-dim-key="${dimCfg.key}" data-idx="${i}">${USD.format(dollars)}</td>`;
+    tbl.appendChild(tr);
+  });
+  card.appendChild(tbl);
+
+  const actions = document.createElement('div');
+  actions.className = 'dim-card__actions';
+  actions.innerHTML = `
+    <button class="btn-dim btn-dim--normalise" data-dim-key="${dimCfg.key}">Normalise to 100%</button>
+    <button class="btn-dim btn-dim--add" data-dim-key="${dimCfg.key}">+ Add value</button>`;
+
+  const addForm = document.createElement('div');
+  addForm.className = 'add-form';
+  addForm.dataset.dimKey = dimCfg.key;
+  addForm.innerHTML = `
+    <input type="text" placeholder="Label" class="add-label-input" />
+    <input type="number" placeholder="%" class="add-pct-input" min="0" max="100" step="1" value="0" />
+    <button class="btn-add-confirm" data-dim-key="${dimCfg.key}">Add</button>`;
+
+  card.appendChild(actions);
+  card.appendChild(addForm);
+  return card;
+}
+
+/* ── Sliders ────────────────────────────────────────────────────────────── */
+
+document.addEventListener('input', e => {
+  if (!e.target.classList.contains('pct-slider')) return;
+  const dimKey = e.target.dataset.dimKey;
+  const idx    = parseInt(e.target.dataset.idx, 10);
+  const items  = state.allocation[dimKey]?.items || state.allocation[dimKey];
+  let newVal   = Math.round(parseFloat(e.target.value));
+  if (isNaN(newVal) || newVal < 0) newVal = 0;
+  if (newVal > 100) newVal = 100;
+  items[idx].pct = newVal;
+
+  const valSpan    = document.querySelector(`.pct-value[data-dim-key="${dimKey}"][data-idx="${idx}"]`);
+  if (valSpan) valSpan.textContent = newVal + '%';
+  const dollarCell = document.querySelector(`td.td-dollar[data-dim-key="${dimKey}"][data-idx="${idx}"]`);
+  if (dollarCell) dollarCell.textContent = USD.format(state.budget * newVal / 100);
+
+  const track = document.querySelector(`.bar-track[data-dim-key="${dimKey}"]`);
+  if (track) {
+    const total = items.reduce((s, x) => s + x.pct, 0) || 1;
+    track.querySelectorAll('.bar-seg').forEach((seg, i) => {
+      if (!items[i]) return;
+      const w = (items[i].pct / total) * 100;
+      seg.style.width = w + '%';
+      seg.title       = `${items[i].label}: ${items[i].pct}% (${USD.format(state.budget * items[i].pct / 100)})`;
+      seg.innerHTML   = w >= 8 ? `<span>${items[i].pct}%</span>` : '';
     });
-    card.appendChild(track);
-
-    // Legend table — sliders
-    const tbl = document.createElement('table');
-    tbl.className = 'legend-table';
-    items.forEach((item, i) => {
-      const colour  = CAT_COLOURS[i % CAT_COLOURS.length];
-      const dollars = budget * item.pct / 100;
-      const pct     = Math.round(item.pct);
-      const tr = document.createElement('tr');
-      tr.dataset.dimKey = dimCfg.key;
-      tr.dataset.idx    = i;
-      tr.innerHTML = `
-        <td class="td-swatch"><span class="swatch" style="background:${colour}"></span></td>
-        <td class="td-label">${escHtml(item.label)}</td>
-        <td style="width:120px;padding:4px 6px">
-          <div class="slider-row">
-            <input type="range" class="pct-slider"
-              min="0" max="100" step="1"
-              value="${pct}"
-              data-dim-key="${dimCfg.key}"
-              data-idx="${i}"
-              aria-label="${escHtml(item.label)} percentage" />
-            <span class="pct-value" data-dim-key="${dimCfg.key}" data-idx="${i}">${pct}%</span>
-          </div>
-        </td>
-        <td class="td-dollar" data-dim-key="${dimCfg.key}" data-idx="${i}">${USD.format(dollars)}</td>`;
-      tbl.appendChild(tr);
-    });
-    card.appendChild(tbl);
-
-    // Per-dimension action buttons
-    const actions = document.createElement('div');
-    actions.className = 'dim-card__actions';
-    actions.innerHTML = `
-      <button class="btn-dim btn-dim--normalise" data-dim-key="${dimCfg.key}">Normalise to 100%</button>
-      <button class="btn-dim btn-dim--add" data-dim-key="${dimCfg.key}">+ Add value</button>`;
-
-    // Add-value inline form
-    const addForm = document.createElement('div');
-    addForm.className = 'add-form';
-    addForm.dataset.dimKey = dimCfg.key;
-    addForm.innerHTML = `
-      <input type="text" placeholder="Label" class="add-label-input" />
-      <input type="number" placeholder="%" class="add-pct-input" min="0" max="100" step="1" value="0" />
-      <button class="btn-add-confirm" data-dim-key="${dimCfg.key}">Add</button>`;
-
-    card.appendChild(actions);
-    card.appendChild(addForm);
-
-    return card;
   }
+});
 
-  /* ── Manual adjustment — sliders ────────────────────────────────────────── */
+/* ── Normalise, Add value ───────────────────────────────────────────────── */
 
-  document.addEventListener('input', e => {
-    if (!e.target.classList.contains('pct-slider')) return;
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('btn-dim--normalise')) {
     const dimKey = e.target.dataset.dimKey;
-    const idx    = parseInt(e.target.dataset.idx, 10);
     const items  = state.allocation[dimKey]?.items || state.allocation[dimKey];
-
-    let newVal = Math.round(parseFloat(e.target.value));
-    if (isNaN(newVal) || newVal < 0) newVal = 0;
-    if (newVal > 100) newVal = 100;
-    items[idx].pct = newVal;
-
-    // Update live display without redistribution (free-form; use Normalise to fix total)
-    const valSpan = document.querySelector(`.pct-value[data-dim-key="${dimKey}"][data-idx="${idx}"]`);
-    if (valSpan) valSpan.textContent = newVal + '%';
-    const dollarCell = document.querySelector(`td.td-dollar[data-dim-key="${dimKey}"][data-idx="${idx}"]`);
-    if (dollarCell) dollarCell.textContent = USD.format(state.budget * newVal / 100);
-
-    // Update bar segment width
-    const track = document.querySelector(`.bar-track[data-dim-key="${dimKey}"]`);
-    if (track) {
-      const total = items.reduce((s, x) => s + x.pct, 0) || 1;
-      const segs  = track.querySelectorAll('.bar-seg');
-      items.forEach((item, i) => {
-        const seg = segs[i];
-        if (!seg) return;
-        const w = (item.pct / total) * 100;
-        seg.style.width = w + '%';
-        seg.title = `${item.label}: ${item.pct}% (${USD.format(state.budget * item.pct / 100)})`;
-        seg.innerHTML = w >= 8 ? `<span>${item.pct}%</span>` : '';
-      });
-    }
-  });
-
-  /* ── Normalise to 100% ──────────────────────────────────────────────────── */
-
-  document.addEventListener('click', e => {
-    if (e.target.classList.contains('btn-dim--normalise')) {
-      const dimKey = e.target.dataset.dimKey;
-      const items  = state.allocation[dimKey]?.items || state.allocation[dimKey];
-      const total  = items.reduce((s, x) => s + x.pct, 0);
-      if (total === 0) return;
-      let runningSum = 0;
-      items.forEach((item, i) => {
-        if (i < items.length - 1) {
-          item.pct = Math.round((item.pct / total) * 100);
-          runningSum += item.pct;
-        } else {
-          item.pct = 100 - runningSum;
-        }
-      });
-      refreshDimension(dimKey);
-    }
-
-    // Toggle add-value form
-    if (e.target.classList.contains('btn-dim--add')) {
-      const dimKey  = e.target.dataset.dimKey;
-      const addForm = document.querySelector(`.add-form[data-dim-key="${dimKey}"]`);
-      if (addForm) addForm.classList.toggle('visible');
-    }
-
-    // Confirm add value
-    if (e.target.classList.contains('btn-add-confirm')) {
-      const dimKey  = e.target.dataset.dimKey;
-      const addForm = document.querySelector(`.add-form[data-dim-key="${dimKey}"]`);
-      const label   = addForm.querySelector('.add-label-input').value.trim();
-      const pct     = Math.round(parseFloat(addForm.querySelector('.add-pct-input').value) || 0);
-      if (!label) return;
-      const items   = state.allocation[dimKey]?.items || state.allocation[dimKey];
-      items.push({ label, pct });
-      // Re-render this dimension card
-      const oldCard = document.querySelector(`.dim-card[data-dim-key="${dimKey}"]`);
-      const dimCfg  = DIMENSION_CONFIG.find(d => d.key === dimKey);
-      if (oldCard && dimCfg) {
-        const newCard = renderDimension(dimCfg, items, state.budget);
-        oldCard.replaceWith(newCard);
-      }
-      addForm.classList.remove('visible');
-    }
-  });
-
-  function refreshDimension(dimKey) {
-    const items  = state.allocation[dimKey]?.items || state.allocation[dimKey];
-    const budget = state.budget;
-
-    // Update bar segments
-    const track = document.querySelector(`.bar-track[data-dim-key="${dimKey}"]`);
-    if (track) {
-      const segs = track.querySelectorAll('.bar-seg');
-      items.forEach((item, i) => {
-        const seg = segs[i];
-        if (!seg) return;
-        seg.style.width = item.pct + '%';
-        seg.title = `${item.label}: ${item.pct}% (${USD.format(budget * item.pct / 100)})`;
-        if (item.pct >= 8) {
-          seg.innerHTML = `<span>${item.pct}%</span>`;
-        } else {
-          seg.innerHTML = '';
-        }
-      });
-    }
-
-    // Update sliders, value labels, and dollar cells
+    const total  = items.reduce((s, x) => s + x.pct, 0);
+    if (total === 0) return;
+    let running = 0;
     items.forEach((item, i) => {
-      const pct     = Math.round(item.pct);
-      const slider  = document.querySelector(`.pct-slider[data-dim-key="${dimKey}"][data-idx="${i}"]`);
-      if (slider)   slider.value = pct;
-      const valSpan = document.querySelector(`.pct-value[data-dim-key="${dimKey}"][data-idx="${i}"]`);
-      if (valSpan)  valSpan.textContent = pct + '%';
-      const dollarCell = document.querySelector(`td.td-dollar[data-dim-key="${dimKey}"][data-idx="${i}"]`);
-      if (dollarCell) dollarCell.textContent = USD.format(budget * pct / 100);
+      if (i < items.length - 1) { item.pct = Math.round((item.pct / total) * 100); running += item.pct; }
+      else { item.pct = 100 - running; }
+    });
+    refreshDimension(dimKey);
+  }
+
+  if (e.target.classList.contains('btn-dim--add')) {
+    const dimKey  = e.target.dataset.dimKey;
+    const addForm = document.querySelector(`.add-form[data-dim-key="${dimKey}"]`);
+    if (addForm) addForm.classList.toggle('visible');
+  }
+
+  if (e.target.classList.contains('btn-add-confirm')) {
+    const dimKey  = e.target.dataset.dimKey;
+    const addForm = document.querySelector(`.add-form[data-dim-key="${dimKey}"]`);
+    const label   = addForm.querySelector('.add-label-input').value.trim();
+    const pct     = Math.round(parseFloat(addForm.querySelector('.add-pct-input').value) || 0);
+    if (!label) return;
+    const items  = state.allocation[dimKey]?.items || state.allocation[dimKey];
+    items.push({ label, pct });
+    const oldCard = document.querySelector(`.dim-card[data-dim-key="${dimKey}"]`);
+    const dimCfg  = DIMENSION_CONFIG.find(d => d.key === dimKey);
+    if (oldCard && dimCfg) oldCard.replaceWith(renderDimension(dimCfg, items, state.budget));
+    addForm.classList.remove('visible');
+  }
+});
+
+function refreshDimension(dimKey) {
+  const items  = state.allocation[dimKey]?.items || state.allocation[dimKey];
+  const budget = state.budget;
+  const track  = document.querySelector(`.bar-track[data-dim-key="${dimKey}"]`);
+  if (track) {
+    const segs = track.querySelectorAll('.bar-seg');
+    items.forEach((item, i) => {
+      const seg = segs[i]; if (!seg) return;
+      seg.style.width = item.pct + '%';
+      seg.title       = `${item.label}: ${item.pct}% (${USD.format(budget * item.pct / 100)})`;
+      seg.innerHTML   = item.pct >= 8 ? `<span>${item.pct}%</span>` : '';
     });
   }
+  items.forEach((item, i) => {
+    const pct      = Math.round(item.pct);
+    const slider   = document.querySelector(`.pct-slider[data-dim-key="${dimKey}"][data-idx="${i}"]`);
+    if (slider)    slider.value = pct;
+    const valSpan  = document.querySelector(`.pct-value[data-dim-key="${dimKey}"][data-idx="${i}"]`);
+    if (valSpan)   valSpan.textContent = pct + '%';
+    const dollarCell = document.querySelector(`td.td-dollar[data-dim-key="${dimKey}"][data-idx="${i}"]`);
+    if (dollarCell)  dollarCell.textContent = USD.format(budget * pct / 100);
+  });
+}
 
-  /* ── Export CSV ─────────────────────────────────────────────────────────── */
+/* ── Export CSV ─────────────────────────────────────────────────────────── */
 
-  exportBtn.addEventListener('click', () => {
-    if (!state.allocation) return;
-    const rows = ['Dimension,Element,Percentage,Dollar Amount'];
-    for (const dim of DIMENSION_CONFIG) {
-      const items = state.allocation[dim.key]?.items || state.allocation[dim.key];
-      for (const item of items) {
-        const dollars = (state.budget * item.pct / 100).toFixed(2);
-        rows.push([
-          csvEsc(dim.label),
-          csvEsc(item.label),
-          item.pct,
-          dollars,
-        ].join(','));
+exportBtn.addEventListener('click', () => {
+  if (!state.allocation) return;
+  const rows = ['Dimension,Element,Percentage,Dollar Amount'];
+  for (const dim of DIMENSION_CONFIG) {
+    const items = state.allocation[dim.key]?.items || state.allocation[dim.key];
+    for (const item of items) {
+      rows.push([csvEsc(dim.label), csvEsc(item.label), item.pct, (state.budget * item.pct / 100).toFixed(2)].join(','));
+    }
+  }
+  downloadCSV(rows.join('\n'), 'event-spend-allocation.csv');
+});
+
+/* ── Reset ──────────────────────────────────────────────────────────────── */
+
+resetBtn.addEventListener('click', () => fullReset());
+
+function fullReset() {
+  Object.assign(state, { slideText:'', budget:0, allocation:null, fileName:'', slideCount:0, excelText:'', excelRows:null, excelPivots:null, postmortem:null });
+  clearFile(); clearError();
+  budgetInput.value = '';
+  resultsSection.classList.remove('visible');
+  dimGrid.innerHTML = '';
+  document.getElementById('step2-card').style.display = 'none';
+  pmSection.classList.remove('visible');
+  pmContent.innerHTML = '';
+  updateAnalyseBtn();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+ * STEP 2 — EXCEL UPLOAD & PIVOT COMPUTATION
+ * ════════════════════════════════════════════════════════════════════════════ */
+
+// ── Data maps: raw Excel values → IBM taxonomy labels ──────────────────────
+
+const GEO_MAP = {
+  'EMEA':     'EMEA',
+  'Americas': 'Americas',
+  'APAC':     'Asia Pacific',
+  'Japan':    'Japan',
+  'China':    'China',
+};
+
+// act_ut15_name → offering_product label
+const OFFERING_MAP = {
+  'Data Platform':                    'watsonx (AI & Data Platform)',
+  'XYZ Software Top and Cross Brand': 'watsonx (AI & Data Platform)',
+  'Automation Platform':              'Automation (IBM Business Automation / Instana)',
+  'Intelligent Operations':           'IBM Consulting',
+  'Strategy & Technology':            'IBM Consulting',
+  'Z HW':                             'IBM z (Mainframe / Z Systems)',
+  'Power HW':                         'IBM Power',
+  'Storage HW':                       'IBM Storage',
+  'Public Cloud Platform':            'Hybrid Cloud & Infrastructure',
+  'Security Platform':                'Security (QRadar / Guardium / Verify)',
+  'Sustainability':                   'Sustainability Software',
+};
+
+// persona → persona label (null = exclude row)
+const PERSONA_MAP = {
+  'AI Leaders and AI Decision Makers':      'Chief Data & AI Officer (CDAO)',
+  'CxO (XYZ)':                             'Chief Executive Officer (CEO)',
+  'Data Leaders':                           'Chief Data & AI Officer (CDAO)',
+  'Integration':                            'IT Architect / Technical Decision Maker',
+  'Infrastructure':                         'IT Architect / Technical Decision Maker',
+  'DevOps (XYZ)':                           'Developer / Engineer',
+  'Identity':                               'Chief Security Officer / CISO',
+  'Security, Governance, and Risk Leaders': 'Chief Security Officer / CISO',
+  'Finance - Business Analysts':            'Chief Financial Officer (CFO)',
+  'Operations and Facilities':              'Line of Business Executive',
+  'No XYZ Persona-Role mapping':            null,
+};
+
+// act_client_type_name → customer_segment label (null = exclude)
+const SEGMENT_MAP = {
+  'Strategic':        'Strategic Accounts (named accounts / ABM)',
+  'Enterprise':       'Enterprise (>$1B revenue)',
+  'Select Territory': 'Mid-Market ($100M–$500M)',
+  'Select Horizon':   'Upper Mid-Market ($500M–$1B)',
+  'Prospective':      'Enterprise (>$1B revenue)',
+  'Unassigned':       null,
+};
+
+// act_ut10_name → ibm_division label (null = exclude)
+const DIVISION_MAP = {
+  'XYZ Software':        'IBM Software',
+  'XYZ Consulting':      'IBM Consulting',
+  'XYZ Infrastructure':  'IBM Infrastructure',
+  'XYZ Research':        'IBM Research',
+  'XYZ Financing':       'IBM Financing',
+};
+
+// ── Pivot computation ──────────────────────────────────────────────────────
+
+function computePivots(rows) {
+  function pivot(rows, getKey) {
+    const map = {};
+    let total = 0;
+    for (const row of rows) {
+      const key = getKey(row);
+      if (key == null) continue;
+      const val = parseFloat(row['total_impact_adjusted']) || 0;
+      map[key]  = (map[key] || 0) + val;
+      total    += val;
+    }
+    const items = Object.entries(map)
+      .map(([label, v]) => ({
+        label,
+        uplift_abs: Math.round(v),
+        uplift_pct: total > 0 ? Math.round(v / total * 100) : 0,
+      }))
+      .sort((a, b) => b.uplift_abs - a.uplift_abs);
+    // Fix rounding so items sum to 100
+    const sum = items.reduce((s, x) => s + x.uplift_pct, 0);
+    if (items.length > 0) items[0].uplift_pct += (100 - sum);
+    return { items, total: Math.round(total) };
+  }
+
+  const geo       = pivot(rows, r => GEO_MAP[r['geography_name']] || r['geography_name'] || null);
+  const offering  = pivot(rows, r => OFFERING_MAP[r['act_ut15_name']] || null);
+  const persona   = pivot(rows, r => {
+    const p = r['persona'];
+    if (!p || p === null) return null;
+    return PERSONA_MAP.hasOwnProperty(p) ? PERSONA_MAP[p] : p;
+  });
+  const segment   = pivot(rows, r => SEGMENT_MAP[r['act_client_type_name']] ?? null);
+  const division  = pivot(rows, r => DIVISION_MAP[r['act_ut10_name']] || null);
+  const grandTotal = Math.round(rows.reduce((s, r) => s + (parseFloat(r['total_impact_adjusted']) || 0), 0));
+
+  console.log('[Pivots] geo:', geo, 'offering:', offering, 'persona:', persona, 'segment:', segment, 'division:', division, 'grandTotal:', grandTotal);
+
+  return { geo, offering, persona, segment, division, grandTotal };
+}
+
+/**
+ * Match a pivot result to intent items, with robust multi-strategy label matching.
+ * Returns array of {label, intent_pct, uplift_pct, multiple} for each intent item.
+ */
+function buildPivotDim(pivotResult, dimKey) {
+  const intentItems = state.allocation[dimKey]?.items || state.allocation[dimKey] || [];
+
+  // Track which pivot items have been matched to avoid double-counting
+  const matched = new Set();
+
+  return intentItems.map(it => {
+    const iLabel = it.label.toLowerCase().trim();
+
+    // Strategy 1: exact match
+    let found = pivotResult.items.find(p => p.label.toLowerCase().trim() === iLabel);
+
+    // Strategy 2: one fully contains the other
+    if (!found) found = pivotResult.items.find(p => {
+      const pLabel = p.label.toLowerCase().trim();
+      return iLabel.includes(pLabel) || pLabel.includes(iLabel);
+    });
+
+    // Strategy 3: first significant word match (≥5 chars)
+    if (!found) {
+      const firstWord = iLabel.split(/[\s\/\(]/)[0];
+      if (firstWord.length >= 5) {
+        found = pivotResult.items.find(p => p.label.toLowerCase().startsWith(firstWord));
       }
     }
-    const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href     = url;
-    a.download = 'event-spend-allocation.csv';
-    a.click();
-    URL.revokeObjectURL(url);
-  });
 
-  /* ── Reset ──────────────────────────────────────────────────────────────── */
-
-  resetBtn.addEventListener('click', () => fullReset());
-
-  function fullReset() {
-    state.slideText      = '';
-    state.budget         = 0;
-    state.allocation     = null;
-    state.fileName       = '';
-    state.slideCount     = 0;
-    state.excelText      = '';
-    state.postmortem     = null;
-
-    clearFile();
-    clearError();
-    budgetInput.value = '';
-    resultsSection.classList.remove('visible');
-    dimGrid.innerHTML = '';
-    document.getElementById('step2-card').style.display = 'none';
-    document.getElementById('postmortem-section').classList.remove('visible');
-    document.getElementById('pm-content').innerHTML = '';
-    updateAnalyseBtn();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  /* ── Helpers ────────────────────────────────────────────────────────────── */
-
-  function setLoading(on) {
-    analyseBtn.disabled = on;
-    loadingBar.classList.toggle('visible', on);
-  }
-
-  function showError(msg) {
-    errorBox.innerHTML = `<strong>Error:</strong> ${escHtml(msg)}`;
-    errorBox.classList.add('visible');
-  }
-
-  function clearError() {
-    errorBox.textContent = '';
-    errorBox.classList.remove('visible');
-  }
-
-  function escHtml(str) {
-    return String(str)
-      .replace(/&/g,'&amp;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;')
-      .replace(/"/g,'&quot;');
-  }
-
-  function csvEsc(str) {
-    const s = String(str);
-    return s.includes(',') || s.includes('"') || s.includes('\n')
-      ? '"' + s.replace(/"/g, '""') + '"'
-      : s;
-  }
-
-  function formatBytes(bytes) {
-    if (bytes < 1024)       return bytes + ' B';
-    if (bytes < 1048576)    return (bytes / 1024).toFixed(1) + ' KB';
-    return (bytes / 1048576).toFixed(1) + ' MB';
-  }
-  /* ══════════════════════════════════════════════════════════════════════════
-   * STEP 2 — POST-MORTEM
-   * ══════════════════════════════════════════════════════════════════════════ */
-
-  // Extend state
-  state.excelText  = '';
-  state.postmortem = null;
-
-  const dropZone2     = document.getElementById('drop-zone-2');
-  const fileInput2    = document.getElementById('file-input-2');
-  const browseLink2   = document.getElementById('browse-link-2');
-  const fileInfo2     = document.getElementById('file-info-2');
-  const fileName2El   = document.getElementById('file-name-2');
-  const fileMeta2El   = document.getElementById('file-meta-2');
-  const sheetCountEl  = document.getElementById('sheet-count');
-  const removeFile2   = document.getElementById('remove-file-2');
-  const pipelineInput = document.getElementById('pipeline-input');
-  const oppsInput     = document.getElementById('opps-input');
-  const eventNameInput= document.getElementById('event-name-input');
-  const postmortemBtn = document.getElementById('postmortem-btn');
-  const loadingBar2   = document.getElementById('loading-bar-2');
-  const errorBox2     = document.getElementById('error-box-2');
-  const pmSection     = document.getElementById('postmortem-section');
-  const pmContent     = document.getElementById('pm-content');
-  const pmExportBtn   = document.getElementById('pm-export-btn');
-  const pmResetBtn    = document.getElementById('pm-reset-btn');
-
-  /* ── Excel upload ───────────────────────────────────────────────────────── */
-
-  browseLink2.addEventListener('click', () => fileInput2.click());
-  dropZone2.addEventListener('click', e => { if (e.target !== browseLink2) fileInput2.click(); });
-  dropZone2.addEventListener('dragover', e => { e.preventDefault(); dropZone2.classList.add('dragover'); });
-  dropZone2.addEventListener('dragleave', () => dropZone2.classList.remove('dragover'));
-  dropZone2.addEventListener('drop', e => {
-    e.preventDefault(); dropZone2.classList.remove('dragover');
-    const f = e.dataTransfer.files[0]; if (f) handleExcel(f);
-  });
-  fileInput2.addEventListener('change', () => {
-    if (fileInput2.files[0]) handleExcel(fileInput2.files[0]);
-    fileInput2.value = '';
-  });
-  removeFile2.addEventListener('click', () => clearExcel());
-
-  async function handleExcel(file) {
-    clearError2();
-    if (!file.name.toLowerCase().endsWith('.xlsx')) {
-      showError2('Only .xlsx files are accepted.');
-      return;
-    }
-    fileName2El.textContent = file.name;
-    fileMeta2El.textContent = formatBytes(file.size);
-    sheetCountEl.textContent = 'Reading…';
-    fileInfo2.classList.add('visible');
-
-    try {
-      const buf  = await file.arrayBuffer();
-      const wb   = XLSX.read(buf, { type: 'array' });
-      const rows = [];
-      wb.SheetNames.forEach(name => {
-        const ws   = wb.Sheets[name];
-        const data = XLSX.utils.sheet_to_csv(ws);
-        rows.push(`=== Sheet: ${name} ===\n${data}`);
+    // Strategy 4: any shared keyword ≥6 chars
+    if (!found) {
+      const words = iLabel.split(/\W+/).filter(w => w.length >= 6);
+      found = pivotResult.items.find(p => {
+        const pLower = p.label.toLowerCase();
+        return words.some(w => pLower.includes(w));
       });
-      state.excelText = rows.join('\n\n');
-      sheetCountEl.textContent = `✓ ${wb.SheetNames.length} sheet${wb.SheetNames.length !== 1 ? 's' : ''} read`;
-      console.log('[Excel] Extracted:\n', state.excelText);
-    } catch (err) {
-      showError2('Failed to read the .xlsx file.');
-      clearExcel(); return;
     }
-    updatePostmortemBtn();
-  }
 
-  function clearExcel() {
-    state.excelText = '';
-    fileInfo2.classList.remove('visible');
-    fileName2El.textContent = '—';
-    fileMeta2El.textContent = '';
-    sheetCountEl.textContent = '';
-    updatePostmortemBtn();
-  }
-
-  function updatePostmortemBtn() {
-    postmortemBtn.disabled = !state.excelText;
-  }
-
-  /* ── Post-mortem AI call ────────────────────────────────────────────────── */
-
-  postmortemBtn.addEventListener('click', async () => {
-    clearError2();
-    setLoading2(true);
-    pmSection.classList.remove('visible');
-
-    // Compact intent summary
-    const intentSummary = DIMENSION_CONFIG.map(dim => {
-      const items = (state.allocation[dim.key]?.items || state.allocation[dim.key] || []);
-      return dim.label + ': ' + items.map(it => `${it.label}=${Math.round(it.pct)}%`).join(', ');
-    }).join('\n');
-
-    // Extract event name from first 300 chars of PoR
-    const porSnippet = state.slideText.slice(0, 300).replace(/\s+/g, ' ');
-
-    // Smart-summarise Excel, keeping most relevant rows
-    const exTrunc = summariseExcel(state.excelText, 5000);
-
-    const prompt = `You are an IBM marketing analytics expert. Analyse post-event Excel data against a spend intent allocation. Return ONLY raw JSON, no markdown, no fences.
-
-SPEND INTENT (6 dimensions):
-${intentSummary}
-
-EVENT NAME HINT (from PoR): ${porSnippet}
-
-POST-EVENT DATA (Excel extract):
-${exTrunc}
-
-Total event spend: ${USD.format(state.budget)}
-
-Return this exact JSON structure:
-{"meta":{"event_name":"...","pipeline_uplift":N,"opps_influenced":N},"offering_product":{"items":[{"label":"...","intent_pct":N,"uplift_pct":N,"multiple":N}]},"market_geography":{"items":[...]},"customer_segment":{"items":[...]},"industry":{"items":[...]},"persona":{"items":[...]},"funnel_stage":{"items":[...]}}
-
-Rules: intent_pct = values from SPEND INTENT above (unchanged). uplift_pct per dimension sums to 100. multiple = uplift_pct/intent_pct rounded to 1dp (0 if intent is 0). pipeline_uplift and opps_influenced extracted from Excel as integers. Use same labels as intent.`;
-
-    try {
-      const res = await fetch(WORKER_URL, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ prompt }),
-      });
-      if (!res.ok) {
-        const d = await res.json().catch(() => ({}));
-        throw new Error(d.error || `Server error (HTTP ${res.status})`);
-      }
-      const body = await res.json();
-      const raw  = body?.generated_text ?? '';
-      let pm;
-      try {
-        // Strip all markdown fences (with or without leading spaces/newlines)
-        const cleaned = raw.replace(/^\s*```[a-z]*\s*/i,'').replace(/\s*```\s*$/,'').trim();
-        // Extract the outermost { ... } block
-        const match   = cleaned.match(/\{[\s\S]*\}/);
-        if (!match) throw new Error('no JSON found');
-        pm = JSON.parse(match[0]);
-      } catch (_) {
-        console.error('[postmortem] raw:', raw);
-        const preview = raw.slice(0, 300).replace(/\n/g, ' ');
-        throw new Error(`AI returned invalid JSON. Raw response preview: "${preview}"`);
-      }
-      state.postmortem = pm;
-      const pipeline = pm.meta?.pipeline_uplift || 0;
-      const opps     = pm.meta?.opps_influenced || 0;
-      renderPostmortem(pm, pipeline, opps);
-      pmSection.classList.add('visible');
-      pmSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } catch (err) {
-      showError2(err.message || 'Unexpected error.');
-    } finally {
-      setLoading2(false);
+    // Prefer unmatched pivot items to avoid double-counting
+    if (found && matched.has(found.label)) {
+      const alt = pivotResult.items.find(p => !matched.has(p.label) && (
+        p.label.toLowerCase().includes(iLabel.split(/[\s\/]/)[0]) ||
+        iLabel.includes(p.label.toLowerCase().split(/[\s\/]/)[0])
+      ));
+      if (alt) found = alt;
     }
+    if (found) matched.add(found.label);
+
+    const uplift_pct = found ? found.uplift_pct : 0;
+    const intent_pct = Math.round(it.pct);
+    const mult       = intent_pct > 0 ? Math.round((uplift_pct / intent_pct) * 10) / 10 : 0;
+    return { label: it.label, intent_pct, uplift_pct, multiple: mult };
   });
+}
 
-  /* ── Render post-mortem ─────────────────────────────────────────────────── */
+// ── Excel upload handlers ──────────────────────────────────────────────────
 
-  function renderPostmortem(pm, pipeline, opps) {
-    const budget    = state.budget;
-    const eventName = pm.meta?.event_name || 'Event Post-Mortem';
-    const returnMult= pipeline > 0 && budget > 0 ? (pipeline / budget).toFixed(1) : '—';
-    const avgMult   = parseFloat(returnMult) || 1;
+browseLink2.addEventListener('click', () => fileInput2.click());
+dropZone2.addEventListener('click', e => { if (e.target !== browseLink2) fileInput2.click(); });
+dropZone2.addEventListener('dragover', e => { e.preventDefault(); dropZone2.classList.add('dragover'); });
+dropZone2.addEventListener('dragleave', () => dropZone2.classList.remove('dragover'));
+dropZone2.addEventListener('drop', e => {
+  e.preventDefault(); dropZone2.classList.remove('dragover');
+  const f = e.dataTransfer.files[0]; if (f) handleExcel(f);
+});
+fileInput2.addEventListener('change', () => {
+  if (fileInput2.files[0]) handleExcel(fileInput2.files[0]);
+  fileInput2.value = '';
+});
+removeFile2.addEventListener('click', () => clearExcel());
 
-    // Header
-    let html = `
-      <div class="pm-header">
-        <div class="pm-eyebrow">Marketing Investment Intent Capture &nbsp;·&nbsp; Event Post-Mortem</div>
-        <div class="pm-title">${escHtml(eventName)}: Spend Intent vs. Attributed Uplift</div>
-        <div class="pm-meta">Intent allocation vs. post-event measured uplift across 6 IBM taxonomy dimensions</div>
+async function handleExcel(file) {
+  clearError2();
+  if (!file.name.toLowerCase().endsWith('.xlsx')) {
+    showError2('Only .xlsx files are accepted.'); return;
+  }
+  fileName2El.textContent  = file.name;
+  fileMeta2El.textContent  = formatBytes(file.size);
+  sheetCountEl.textContent = 'Reading…';
+  fileInfo2.classList.add('visible');
+
+  try {
+    const buf      = await file.arrayBuffer();
+    const wb       = XLSX.read(buf, { type: 'array' });
+    const ws       = wb.Sheets[wb.SheetNames[0]];
+    const jsonRows = XLSX.utils.sheet_to_json(ws, { defval: null });
+    state.excelRows = jsonRows;
+
+    const csvParts = [];
+    wb.SheetNames.forEach(name => {
+      csvParts.push(`=== Sheet: ${name} ===\n${XLSX.utils.sheet_to_csv(wb.Sheets[name])}`);
+    });
+    state.excelText  = csvParts.join('\n\n');
+    state.excelPivots = computePivots(jsonRows);
+    sheetCountEl.textContent = `✓ ${jsonRows.length} rows · pivots computed`;
+  } catch (err) {
+    showError2('Failed to read the .xlsx file: ' + err.message);
+    clearExcel(); return;
+  }
+  updatePostmortemBtn();
+}
+
+function clearExcel() {
+  state.excelText = ''; state.excelRows = null; state.excelPivots = null;
+  fileInfo2.classList.remove('visible');
+  fileName2El.textContent = '—'; fileMeta2El.textContent = ''; sheetCountEl.textContent = '';
+  updatePostmortemBtn();
+}
+
+function updatePostmortemBtn() {
+  postmortemBtn.disabled = !state.excelRows;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+ * STEP 2 — GENERATE POST-MORTEM
+ * ════════════════════════════════════════════════════════════════════════════ */
+
+postmortemBtn.addEventListener('click', async () => {
+  clearError2();
+  setLoading2(true);
+  pmSection.classList.remove('visible');
+
+  const pivots     = state.excelPivots;
+  const intentAlloc = state.allocation;
+
+  // Build the 5 pivot-computed dimensions straight from data
+  const offeringItems = buildPivotDim(pivots.offering,  'offering_product');
+  const geoItems      = buildPivotDim(pivots.geo,       'market_geography');
+  const segmentItems  = buildPivotDim(pivots.segment,   'customer_segment');
+  const personaItems  = buildPivotDim(pivots.persona,   'persona');
+  const divisionItems = buildPivotDim(pivots.division,  'ibm_division');
+
+  // Prompt AI only for Industry + Funnel Stage (not in Excel data)
+  const intentIndustry = (intentAlloc['industry']?.items || []).map(it => `${it.label}=${Math.round(it.pct)}%`).join(', ');
+  const intentFunnel   = (intentAlloc['funnel_stage']?.items || []).map(it => `${it.label}=${Math.round(it.pct)}%`).join(', ');
+  const porSnippet     = state.slideText.slice(0, 400).replace(/\s+/g,' ');
+  const exSample       = summariseExcel(state.excelText, 2500);
+
+  const prompt = `IBM marketing analyst. Return ONLY raw JSON, no markdown.
+
+EVENT CONTEXT: ${porSnippet}
+Total measured impact: ${USD.format(pivots.grandTotal)}
+
+Estimate post-event uplift % distribution for ONLY these 2 dimensions. Use exact labels provided.
+industry intent: ${intentIndustry}
+funnel_stage intent: ${intentFunnel}
+
+Excel sample (for context):
+${exSample}
+
+Return ONLY:
+{"meta":{"event_name":"...","pipeline_uplift":${pivots.grandTotal},"opps_influenced":0},"industry":{"items":[{"label":"...","intent_pct":N,"uplift_pct":N,"multiple":N}]},"funnel_stage":{"items":[{"label":"...","intent_pct":N,"uplift_pct":N,"multiple":N}]}}
+
+Rules: uplift_pct per dimension sums to 100. multiple = uplift_pct/intent_pct rounded to 1dp. Extract event_name from context.`;
+
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ prompt }),
+    });
+    if (!res.ok) {
+      const d = await res.json().catch(() => ({}));
+      throw new Error(d.error || `Server error (HTTP ${res.status})`);
+    }
+    const body = await res.json();
+    const raw  = body?.generated_text ?? '';
+    let aiResult;
+    try {
+      const cleaned = raw.replace(/^\s*```[a-z]*\s*/i,'').replace(/\s*```\s*$/,'').trim();
+      const match   = cleaned.match(/\{[\s\S]*\}/);
+      if (!match) throw new Error('no JSON found');
+      aiResult = JSON.parse(match[0]);
+    } catch (_) {
+      console.error('[postmortem-ai] raw:', raw);
+      // Graceful fallback: echo intent as uplift
+      aiResult = {
+        meta: { event_name: 'Event Post-Mortem', pipeline_uplift: pivots.grandTotal, opps_influenced: 0 },
+        industry:     { items: (intentAlloc['industry']?.items||[]).map(it=>({ label:it.label, intent_pct:Math.round(it.pct), uplift_pct:Math.round(it.pct), multiple:1.0 })) },
+        funnel_stage: { items: (intentAlloc['funnel_stage']?.items||[]).map(it=>({ label:it.label, intent_pct:Math.round(it.pct), uplift_pct:Math.round(it.pct), multiple:1.0 })) },
+      };
+    }
+
+    const pm = {
+      meta:             aiResult.meta || { event_name: 'Event Post-Mortem', pipeline_uplift: pivots.grandTotal, opps_influenced: 0 },
+      offering_product: { items: offeringItems,  source: 'pivot' },
+      market_geography: { items: geoItems,        source: 'pivot' },
+      customer_segment: { items: segmentItems,    source: 'pivot' },
+      industry:         { ...aiResult.industry,   source: 'ai'    },
+      persona:          { items: personaItems,    source: 'pivot' },
+      funnel_stage:     { ...aiResult.funnel_stage, source: 'ai'  },
+      ibm_division:     { items: divisionItems,   source: 'pivot' },
+    };
+    pm.meta.pipeline_uplift = pivots.grandTotal;
+
+    state.postmortem = pm;
+    renderPostmortem(pm, pivots.grandTotal, pm.meta.opps_influenced || 0);
+    pmSection.classList.add('visible');
+    pmSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (err) {
+    showError2(err.message || 'Unexpected error.');
+  } finally {
+    setLoading2(false);
+  }
+});
+
+/* ════════════════════════════════════════════════════════════════════════════
+ * RENDER POST-MORTEM
+ * ════════════════════════════════════════════════════════════════════════════ */
+
+function renderPostmortem(pm, pipeline, opps) {
+  const budget     = state.budget;
+  const returnMult = pipeline > 0 && budget > 0 ? (pipeline / budget).toFixed(1) : '—';
+  const avgMult    = parseFloat(returnMult) || 1;
+  const eventName  = pm.meta?.event_name || 'Event Post-Mortem';
+
+  let html = `
+    <div class="pm-header">
+      <div class="pm-eyebrow">Marketing Investment Intent Capture &nbsp;·&nbsp; Event Post-Mortem</div>
+      <div class="pm-title">${escHtml(eventName)}: Spend Intent vs. Attributed Uplift</div>
+      <div class="pm-meta">Intent allocation vs. post-event measured uplift across 7 IBM taxonomy dimensions</div>
+    </div>
+
+    <div class="pm-kpis">
+      <div class="pm-kpi">
+        <div class="pm-kpi__label">Total Event Spend</div>
+        <div class="pm-kpi__value">${USD.format(budget)}</div>
       </div>
-
-      <div class="pm-kpis">
-        <div class="pm-kpi">
-          <div class="pm-kpi__label">Total Event Spend</div>
-          <div class="pm-kpi__value">${USD.format(budget)}</div>
-        </div>
-        <div class="pm-kpi">
-          <div class="pm-kpi__label">Attributed Pipeline Uplift</div>
-          <div class="pm-kpi__value">${pipeline > 0 ? USD.format(pipeline) : '—'}</div>
-        </div>
-        <div class="pm-kpi">
-          <div class="pm-kpi__label">Return on Event Spend</div>
-          <div class="pm-kpi__value positive">${returnMult !== '—' ? returnMult + '×' : '—'}</div>
-        </div>
-        <div class="pm-kpi">
-          <div class="pm-kpi__label">Opportunities Influenced</div>
-          <div class="pm-kpi__value">${opps > 0 ? opps.toLocaleString() : '—'}</div>
-        </div>
+      <div class="pm-kpi">
+        <div class="pm-kpi__label">Attributed Pipeline Uplift</div>
+        <div class="pm-kpi__value">${pipeline > 0 ? USD.format(pipeline) : '—'}</div>
       </div>
+      <div class="pm-kpi">
+        <div class="pm-kpi__label">Return on Event Spend</div>
+        <div class="pm-kpi__value positive">${returnMult !== '—' ? returnMult + '×' : '—'}</div>
+      </div>
+      <div class="pm-kpi">
+        <div class="pm-kpi__label">Opportunities Influenced</div>
+        <div class="pm-kpi__value">${opps > 0 ? opps.toLocaleString() : '—'}</div>
+      </div>
+    </div>
 
-      <div class="pm-table">
-        <div class="pm-table__header">
-          <span>Spend Intent (top) vs. Measured Uplift (bottom) — % share, aligned scale</span>
-          <span style="color:var(--ibm-green)">Return Multiple — Uplift $ ÷ Spend $ &nbsp;·&nbsp; Green ≥ ${returnMult}× avg</span>
-        </div>`;
+    <div class="pm-table">
+      <div class="pm-table__header">
+        <span>Spend Intent (top) vs. Measured Uplift (bottom) — % share, aligned scale</span>
+        <span style="color:var(--ibm-green)">Return Multiple — Uplift ÷ Spend &nbsp;·&nbsp; Green ≥ ${returnMult}× avg</span>
+      </div>`;
 
-    DIMENSION_CONFIG.forEach(dim => {
-      const dimData = pm[dim.key];
-      if (!dimData?.items?.length) return;
-      const items = dimData.items;
+  DIMENSION_CONFIG.forEach(dim => {
+    const dimData = pm[dim.key];
+    if (!dimData?.items?.length) return;
+    const items  = dimData.items;
+    const source = dimData.source || 'pivot';
 
-      // Intent bar
-      const intentSegs = items.map((it, i) => {
-        const w = Math.max(it.intent_pct || 0, 0);
-        const c = CAT_COLOURS[i % CAT_COLOURS.length];
-        return `<div class="pm-bar-seg" style="width:${w}%;background:${c};flex-shrink:0">
-          ${w >= 7 ? `<span>${w}</span>` : ''}
-        </div>`;
-      }).join('');
+    const intentSegs = items.map((it, i) => {
+      const w = Math.max(it.intent_pct || 0, 0);
+      const c = CAT_COLOURS[i % CAT_COLOURS.length];
+      return `<div class="pm-bar-seg" style="width:${w}%;background:${c};flex-shrink:0">${w >= 7 ? `<span>${w}</span>` : ''}</div>`;
+    }).join('');
 
-      // Uplift bar
-      const upliftSegs = items.map((it, i) => {
-        const w = Math.max(it.uplift_pct || 0, 0);
-        const c = CAT_COLOURS[i % CAT_COLOURS.length];
-        return `<div class="pm-bar-seg" style="width:${w}%;background:${c};flex-shrink:0;opacity:0.75">
-          ${w >= 7 ? `<span>${w}</span>` : ''}
-        </div>`;
-      }).join('');
+    const upliftSegs = items.map((it, i) => {
+      const w = Math.max(it.uplift_pct || 0, 0);
+      const c = CAT_COLOURS[i % CAT_COLOURS.length];
+      return `<div class="pm-bar-seg" style="width:${w}%;background:${c};flex-shrink:0;opacity:0.75">${w >= 7 ? `<span>${w}</span>` : ''}</div>`;
+    }).join('');
 
-      // Transitions
-      const transitions = items.map((it, i) => {
-        const c = CAT_COLOURS[i % CAT_COLOURS.length];
-        return `<span style="color:${c}">${escHtml(it.label)} ${it.intent_pct}→${it.uplift_pct}%</span>`;
-      }).join('');
+    const transitions = items.map((it, i) => {
+      const c = CAT_COLOURS[i % CAT_COLOURS.length];
+      return `<span style="color:${c}">${escHtml(it.label)} ${it.intent_pct}→${it.uplift_pct}%</span>`;
+    }).join('');
 
-      // Return multiples
-      const multiples = items.map((it, i) => {
-        const c    = CAT_COLOURS[i % CAT_COLOURS.length];
-        const mult = it.multiple ?? 0;
-        const cls  = mult >= avgMult ? 'above-avg' : 'below-avg';
-        const shortLabel = it.label.length > 20 ? it.label.slice(0, 18) + '…' : it.label;
-        return `<div class="pm-mult-item" style="--swatch:${c}">
-          <span style="color:${c}">■</span>
-          ${escHtml(shortLabel)} <span class="pm-mult-val ${cls}">${mult}×</span>
-        </div>`;
-      }).join('');
+    const multiples = items.map((it, i) => {
+      const c         = CAT_COLOURS[i % CAT_COLOURS.length];
+      const mult      = it.multiple ?? 0;
+      const cls       = mult >= avgMult ? 'above-avg' : 'below-avg';
+      const shortLabel = it.label.length > 22 ? it.label.slice(0, 20) + '…' : it.label;
+      return `<div class="pm-mult-item">
+        <span style="color:${c}">■</span>
+        ${escHtml(shortLabel)} <span class="pm-mult-val ${cls}">${mult}×</span>
+      </div>`;
+    }).join('');
 
-      html += `
-        <div class="pm-row">
-          <div class="pm-row__label">${escHtml(dim.label)}</div>
-          <div class="pm-bars">
-            <div class="pm-bar-line">
-              <span class="pm-bar-type">Intent</span>
-              <div class="pm-bar-track">${intentSegs}</div>
-            </div>
-            <div class="pm-bar-line">
-              <span class="pm-bar-type">Uplift</span>
-              <div class="pm-bar-track">${upliftSegs}</div>
-            </div>
-            <div class="pm-transitions">${transitions}</div>
+    const sourceTag = source === 'ai'
+      ? `<span class="ai-tag">AI inferred</span>`
+      : `<span>Pivot</span>`;
+
+    html += `
+      <div class="pm-row">
+        <div class="pm-row__label">${escHtml(dim.label)}</div>
+        <div class="pm-bars">
+          <div class="pm-bar-line">
+            <span class="pm-bar-type">Intent</span>
+            <div class="pm-bar-track">${intentSegs}</div>
           </div>
-          <div class="pm-multiples">${multiples}</div>
-        </div>`;
-    });
-
-    html += `</div>`; // close pm-table
-    pmContent.innerHTML = html;
-  }
-
-  /* ── PM Export CSV ──────────────────────────────────────────────────────── */
-
-  pmExportBtn.addEventListener('click', () => {
-    if (!state.postmortem) return;
-    const rows = ['Dimension,Element,Intent %,Uplift %,Return Multiple'];
-    for (const dim of DIMENSION_CONFIG) {
-      const items = state.postmortem[dim.key]?.items || [];
-      for (const it of items) {
-        rows.push([
-          csvEsc(dim.label), csvEsc(it.label),
-          it.intent_pct, it.uplift_pct, it.multiple
-        ].join(','));
-      }
-    }
-    const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url; a.download = 'event-postmortem.csv'; a.click();
-    URL.revokeObjectURL(url);
+          <div class="pm-bar-line">
+            <span class="pm-bar-type">Uplift</span>
+            <div class="pm-bar-track">${upliftSegs}</div>
+          </div>
+          <div class="pm-transitions">${transitions}</div>
+        </div>
+        <div class="pm-multiples">${multiples}</div>
+      </div>`;
   });
 
-  pmResetBtn.addEventListener('click', () => fullReset());
+  html += `</div>
+    <div class="pivot-note">
+      5 of 7 dimensions computed from exact Excel pivot tables <span>● Pivot</span> &nbsp;·&nbsp;
+      Industry &amp; Funnel Stage inferred by watsonx AI <span class="ai-tag">● AI inferred</span>
+    </div>`;
 
-  /* ── Step 2 helpers ─────────────────────────────────────────────────────── */
+  pmContent.innerHTML = html;
+}
 
-  function setLoading2(on) {
-    postmortemBtn.disabled = on;
-    loadingBar2.classList.toggle('visible', on);
-  }
-  function showError2(msg) {
-    errorBox2.innerHTML = `<strong>Error:</strong> ${escHtml(msg)}`;
-    errorBox2.classList.add('visible');
-  }
-  function clearError2() {
-    errorBox2.textContent = '';
-    errorBox2.classList.remove('visible');
-  }
+/* ── PM Export CSV ──────────────────────────────────────────────────────── */
 
-
-  /**
-   * Intelligently summarise a large Excel CSV string to fit within maxChars.
-   * Keeps: sheet headers, CSV header rows, keyword-matching rows,
-   * then evenly samples remaining rows to fill the budget.
-   */
-  function summariseExcel(text, maxChars) {
-    if (text.length <= maxChars) return text;
-
-    const keywords = /pipeline|revenue|opportunit|uplift|influenced|account|region|industry|segment|persona|product|geography|funnel|stage|deal|close|won|contact|attend/i;
-    const lines    = text.split('\n');
-    const priority = [];
-    const rest     = [];
-    let   isHeader = true;
-
-    for (const line of lines) {
-      if (line.startsWith('=== Sheet:')) {
-        priority.push(line);
-        isHeader = true; // next non-empty line is a CSV header
-        continue;
-      }
-      if (isHeader && line.trim()) {
-        priority.push(line); // always keep CSV header row
-        isHeader = false;
-        continue;
-      }
-      if (keywords.test(line)) {
-        priority.push(line);
-      } else {
-        rest.push(line);
-      }
+pmExportBtn.addEventListener('click', () => {
+  if (!state.postmortem) return;
+  const rows = ['Dimension,Element,Intent %,Uplift %,Return Multiple,Source'];
+  for (const dim of DIMENSION_CONFIG) {
+    const dimData = state.postmortem[dim.key];
+    const items   = dimData?.items || [];
+    const source  = dimData?.source || 'pivot';
+    for (const it of items) {
+      rows.push([csvEsc(dim.label), csvEsc(it.label), it.intent_pct, it.uplift_pct, it.multiple, source].join(','));
     }
+  }
+  downloadCSV(rows.join('\n'), 'event-postmortem.csv');
+});
 
-    let result = priority.join('\n');
-    if (result.length >= maxChars) return result.slice(0, maxChars);
+pmResetBtn.addEventListener('click', () => fullReset());
 
-    // Fill remaining budget with evenly-sampled rest rows
-    const remaining = maxChars - result.length - 100;
-    if (remaining > 0 && rest.length > 0) {
-      const avgRowLen = Math.max(40, Math.floor(rest.reduce((s, r) => s + r.length, 0) / rest.length));
-      const step      = Math.max(1, Math.floor(rest.length / (remaining / avgRowLen)));
-      const sampled   = rest.filter((_, i) => i % step === 0).join('\n');
-      result += '\n' + sampled.slice(0, remaining);
-    }
+/* ════════════════════════════════════════════════════════════════════════════
+ * HELPERS
+ * ════════════════════════════════════════════════════════════════════════════ */
 
-    return result;
+function setLoading(on) {
+  analyseBtn.disabled = on;
+  loadingBar.classList.toggle('visible', on);
+}
+
+function setLoading2(on) {
+  postmortemBtn.disabled = on || !state.excelRows;
+  loadingBar2.classList.toggle('visible', on);
+}
+
+function showError(msg)  { errorBox.innerHTML  = `<strong>Error:</strong> ${escHtml(msg)}`; errorBox.classList.add('visible'); }
+function clearError()    { errorBox.textContent = ''; errorBox.classList.remove('visible'); }
+function showError2(msg) { errorBox2.innerHTML  = `<strong>Error:</strong> ${escHtml(msg)}`; errorBox2.classList.add('visible'); }
+function clearError2()   { errorBox2.textContent = ''; errorBox2.classList.remove('visible'); }
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function csvEsc(str) {
+  const s = String(str);
+  return s.includes(',') || s.includes('"') || s.includes('\n') ? '"' + s.replace(/"/g,'""') + '"' : s;
+}
+
+function formatBytes(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1048576) return (b/1024).toFixed(1) + ' KB';
+  return (b/1048576).toFixed(1) + ' MB';
+}
+
+function downloadCSV(content, filename) {
+  const blob = new Blob([content], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * Intelligently summarise a large Excel CSV string to fit within maxChars.
+ */
+function summariseExcel(text, maxChars) {
+  if (text.length <= maxChars) return text;
+  const keywords = /pipeline|revenue|opportunit|uplift|influenced|account|region|industry|segment|persona|product|geography|funnel|stage/i;
+  const lines    = text.split('\n');
+  const priority = [];
+  const rest     = [];
+  let   isHeader = true;
+
+  for (const line of lines) {
+    if (line.startsWith('=== Sheet:')) { priority.push(line); isHeader = true; continue; }
+    if (isHeader && line.trim())       { priority.push(line); isHeader = false; continue; }
+    if (keywords.test(line))            priority.push(line);
+    else                                rest.push(line);
   }
 
+  let result = priority.join('\n');
+  if (result.length >= maxChars) return result.slice(0, maxChars);
+  const remaining = maxChars - result.length - 100;
+  if (remaining > 0 && rest.length > 0) {
+    const avgLen = Math.max(40, Math.floor(rest.reduce((s,r) => s+r.length, 0) / rest.length));
+    const step   = Math.max(1, Math.floor(rest.length / (remaining / avgLen)));
+    result += '\n' + rest.filter((_,i) => i % step === 0).join('\n').slice(0, remaining);
+  }
+  return result;
+}
 
 </script>
-
 </body>
 </html>
