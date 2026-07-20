@@ -1202,28 +1202,25 @@ postmortemBtn.addEventListener('click', async () => {
   const personaItems  = buildPivotDim(pivots.persona,   'persona');
   const divisionItems = buildPivotDim(pivots.division,  'ibm_division');
 
-  // Prompt AI only for Industry + Funnel Stage (not in Excel data)
-  const intentIndustry = (intentAlloc['industry']?.items || []).map(it => `${it.label}=${Math.round(it.pct)}%`).join(', ');
-  const intentFunnel   = (intentAlloc['funnel_stage']?.items || []).map(it => `${it.label}=${Math.round(it.pct)}%`).join(', ');
-  const porSnippet     = state.slideText.slice(0, 400).replace(/\s+/g,' ');
-  const exSample       = summariseExcel(state.excelText, 2500);
+  // Prompt AI only for Industry + Funnel Stage (not in Excel data).
+  // Keep prompt TINY to avoid watsonx context deadline — no Excel data needed here.
+  const intentIndustry = (intentAlloc['industry']?.items || []).map(it => `${it.label}=${Math.round(it.pct)}%`).join('; ');
+  const intentFunnel   = (intentAlloc['funnel_stage']?.items || []).map(it => `${it.label}=${Math.round(it.pct)}%`).join('; ');
+  // Extract event name from first 200 chars of slide text only
+  const eventHint      = state.slideText.slice(0, 200).replace(/\s+/g,' ').trim();
 
-  const prompt = `IBM marketing analyst. Return ONLY raw JSON, no markdown.
+  const prompt = `IBM marketing analyst. Return ONLY valid raw JSON, no markdown, no prose.
 
-EVENT CONTEXT: ${porSnippet}
-Total measured impact: ${USD.format(pivots.grandTotal)}
+Event: ${eventHint}
+Total pipeline uplift: ${USD.format(pivots.grandTotal)}
 
-Estimate post-event uplift % distribution for ONLY these 2 dimensions. Use exact labels provided.
-industry intent: ${intentIndustry}
-funnel_stage intent: ${intentFunnel}
+For each dimension below, redistribute the uplift % across the same labels. Adjust based on typical IBM event outcomes. uplift_pct values must sum to 100 per dimension. multiple = uplift_pct / intent_pct rounded to 1 decimal.
 
-Excel sample (for context):
-${exSample}
+industry intent allocation: ${intentIndustry}
+funnel_stage intent allocation: ${intentFunnel}
 
-Return ONLY:
-{"meta":{"event_name":"...","pipeline_uplift":${pivots.grandTotal},"opps_influenced":0},"industry":{"items":[{"label":"...","intent_pct":N,"uplift_pct":N,"multiple":N}]},"funnel_stage":{"items":[{"label":"...","intent_pct":N,"uplift_pct":N,"multiple":N}]}}
-
-Rules: uplift_pct per dimension sums to 100. multiple = uplift_pct/intent_pct rounded to 1dp. Extract event_name from context.`;
+Return ONLY this JSON (no other text):
+{"meta":{"event_name":"<extract from Event above>","pipeline_uplift":${pivots.grandTotal},"opps_influenced":0},"industry":{"items":[{"label":"<exact label>","intent_pct":<N>,"uplift_pct":<N>,"multiple":<N>}]},"funnel_stage":{"items":[{"label":"<exact label>","intent_pct":<N>,"uplift_pct":<N>,"multiple":<N>}]}}`;
 
   try {
     const res = await fetch(WORKER_URL, {
